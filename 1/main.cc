@@ -12,7 +12,7 @@
 
 #include "setup.hh"
 
-namespace One {
+namespace Day1 {
 
 [[nodiscard]] auto partOne() -> uint32_t {
   auto [first, second] = Setup::readLists("1/inputs.txt");
@@ -41,10 +41,10 @@ namespace One {
   return std::accumulate(std::begin(range), std::end(range), uint64_t{});
 }
 
-}  // namespace One
+}  // namespace Day1
 
 auto main() -> int {
   fmt::print("Day 1\n-----\n");
-  fmt::print("Part 1 | Distance sum        : {}\n", One::partOne());
-  fmt::print("Part 2 | Weighted difference : {}\n", One::partTwo());
+  fmt::print("Part 1 | Distance sum        : {}\n", Day1::partOne());
+  fmt::print("Part 2 | Weighted difference : {}\n", Day1::partTwo());
 }

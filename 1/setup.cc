@@ -14,7 +14,7 @@ namespace {
 
 }  // namespace
 
-namespace One::Setup {
+namespace Day1::Setup {
 
 [[nodiscard]] auto readLists(const std::filesystem::path& path)
     -> std::pair<std::vector<uint32_t>, std::vector<uint32_t>> {
@@ -32,4 +32,4 @@ namespace One::Setup {
   return {list_a, list_b};
 }
 
-}  // namespace One::Setup
+}  // namespace Day1::Setup
