@@ -17,6 +17,9 @@ jobs:
       - name: Install ninja
         uses: seanmiddleditch/gha-setup-ninja@master
 
+      - name: Install dependencies
+        run: sudo apt install libfmt-dev
+
       - name: Build
         run: ninja
 
