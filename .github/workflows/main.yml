@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install ninja
+      - name: Install ninja-build
         uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Install dependencies
@@ -23,6 +23,6 @@ jobs:
       - name: Build
         run: ninja
 
-      - name: Run a multi-line script
+      - name: Run
         run: |
           build/1
