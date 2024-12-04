@@ -1,5 +1,4 @@
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 
 #include <algorithm>
 #include <cctype>
@@ -106,6 +105,6 @@ auto main() -> int {
   fmt::print("Day 3\n-----\n");
   fmt::print("Part 1 | Multiplication sum   : {}\n",
              Day3::parseGibberish(std::string_view{*file}));
-  fmt::print("Part 2 | Multipy conditionally: {}\n",
+  fmt::print("Part 2 | Multipy conditionally: {}\n\n",
              Day3::parseGibberishConditionally(*file));
 }
