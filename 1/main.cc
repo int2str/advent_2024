@@ -43,7 +43,7 @@ namespace Day1 {
 }  // namespace Day1
 
 auto main() -> int {
-  auto [first, second] = Day1::Setup::readLists("1/inputs.txt");
+  auto [first, second] = Day1::Setup::readLists("1/input.txt");
 
   fmt::print("Day 1\n-----\n");
   fmt::print("Part 1 | Distance sum       : {}\n",

@@ -58,7 +58,7 @@ namespace Day2 {
 }  // namespace Day2
 
 auto main() -> int {
-  const auto records = Day2::Setup::readLists("2/inputs.txt");
+  const auto records = Day2::Setup::readLists("2/input.txt");
 
   fmt::print("Day 2\n-----\n");
   fmt::print("Part 1 | Safe reports  : {}\n", Day2::safeReports(records));
