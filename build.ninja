@@ -4,8 +4,7 @@ ar = ar
 builddir = build
 b = $builddir
 
-cflags = -O3 -g -std=c++23 -Wextra -Wconversion -Wall -pedantic -Werror $
-    -Iinclude -Ideps/coreavr -Ideps/testrunner/include
+cflags = -O3 -g -std=c++23 -Wextra -Wconversion -Wall -pedantic -Werror -I. 
 ldflags = -Wl,--gc-sections -Wl,--relax -L$b -lfmt
 
 rule cxx
@@ -44,6 +43,12 @@ build $b/1_setup.o: cxx 1/setup.cc
 build $b/2: link $b/2_main.o $b/2_setup.o
 build $b/2_main.o: cxx 2/main.cc
 build $b/2_setup.o: cxx 2/setup.cc
+
+build $b/3: link $b/3_main.o $b/utils.a
+build $b/3_main.o: cxx 3/main.cc
+
+build $b/utils.a: ar $b/read_file.o
+build $b/read_file.o: cxx utils/read_file.cc
 
 build compile_commands.json: compdb | build.ninja
 

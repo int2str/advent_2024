@@ -11,7 +11,8 @@ Checks: >
   -cppcoreguidelines-pro-type-union-access,
   -llvm-header-guard,
   -misc-include-cleaner,
-  -readability-redundant-member-init
+  -readability-redundant-member-init,
+  -readability-identifier-length
 
 WarningsAsErrors: false
 FormatStyle: file
