@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -24,6 +24,4 @@ jobs:
         run: ninja
 
       - name: Run
-        run: |
-          build/1
-          build/2
+        run: ./run.sh
