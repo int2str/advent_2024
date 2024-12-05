@@ -1,8 +1,8 @@
 #ifndef CURRY_HH
 #define CURRY_HH
 
+#include <functional>  // IWYU pragma: keep
 #include <utility>
-#include <functional>
 
 namespace Utils {
 
@@ -13,6 +13,6 @@ auto uncurry(FN fun) {
   };
 }
 
-}
+}  // namespace Utils
 
 #endif  // CURRY_HH

@@ -1,6 +1,6 @@
 //
 // int2str's Advent of Code 2024
-// https://adventofcode.com/2024/day/1
+// https://adventofcode.com/2024/day/2
 //
 
 #include <fmt/core.h>
@@ -10,7 +10,8 @@
 #include <functional>
 #include <ranges>
 
-#include "setup.hh"
+#include "utils/read_file.hh"
+#include "utils/split.hh"
 
 namespace {
 
@@ -58,7 +59,11 @@ namespace Day2 {
 }  // namespace Day2
 
 auto main() -> int {
-  const auto records = Day2::Setup::readLists("2/input.txt");
+  const auto records = Utils::readLines("2/input.txt")  //
+                       | std::views::transform([](const auto& line) {
+                           return Utils::split<int>(line, " ");
+                         })  //
+                       | std::ranges::to<std::vector>();
 
   fmt::print("Day 2\n-----\n");
   fmt::print("Part 1 | Safe reports  : {}\n", Day2::safeReports(records));

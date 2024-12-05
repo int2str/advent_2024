@@ -2,13 +2,16 @@
 #define READ_FILE_HH
 
 #include <filesystem>
-#include <optional>
+#include <string>
 #include <vector>
 
 namespace Utils {
 
 [[nodiscard]] auto readFile(const std::filesystem::path& path)
-    -> std::optional<std::vector<char>>;
+    -> std::vector<char>;
+
+[[nodiscard]] auto readLines(const std::filesystem::path& path)
+    -> std::vector<std::string>;
 
 }  // namespace Utils
 

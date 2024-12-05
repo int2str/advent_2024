@@ -1,3 +1,8 @@
+//
+// int2str's Advent of Code 2024
+// https://adventofcode.com/2024/day/3
+//
+
 #include <fmt/core.h>
 
 #include <algorithm>
@@ -100,11 +105,11 @@ template <char WHAT>
 
 auto main() -> int {
   const auto file = Utils::readFile("3/input.txt");
-  if (!file) return 1;
+  if (file.empty()) return 1;
 
   fmt::print("Day 3\n-----\n");
   fmt::print("Part 1 | Multiplication sum   : {}\n",
-             Day3::parseGibberish(std::string_view{*file}));
+             Day3::parseGibberish(std::string_view{file}));
   fmt::print("Part 2 | Multipy conditionally: {}\n\n",
-             Day3::parseGibberishConditionally(*file));
+             Day3::parseGibberishConditionally(file));
 }

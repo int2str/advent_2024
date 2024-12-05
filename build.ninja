@@ -36,13 +36,11 @@ rule tidy
     command = clang-tidy -p . --quiet --header-filter=.* 1/*.cc
     description = TIDY
 
-build $b/1: link $b/1_main.o $b/1_setup.o
+build $b/1: link $b/1_main.o $b/utils.a
 build $b/1_main.o: cxx 1/main.cc
-build $b/1_setup.o: cxx 1/setup.cc
 
-build $b/2: link $b/2_main.o $b/2_setup.o
+build $b/2: link $b/2_main.o $b/utils.a
 build $b/2_main.o: cxx 2/main.cc
-build $b/2_setup.o: cxx 2/setup.cc
 
 build $b/3: link $b/3_main.o $b/utils.a
 build $b/3_main.o: cxx 3/main.cc

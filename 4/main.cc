@@ -1,3 +1,8 @@
+//
+// int2str's Advent of Code 2024
+// https://adventofcode.com/2024/day/4
+//
+
 #include <fmt/core.h>
 
 #include <algorithm>
@@ -33,18 +38,17 @@ struct CoordinateHash {
 using LookupTable =
     std::unordered_map<char, std::unordered_set<Coordinate, CoordinateHash>>;
 
-[[nodiscard]] auto makeLookupTable(std::string_view chars) -> LookupTable {
+[[nodiscard]] auto makeLookupTable(const std::filesystem::path& path)
+    -> LookupTable {
   auto lookup = LookupTable{};
-
-  auto x = int{};
-  auto y = int{};
-  for (const auto chr : chars) {
-    if (chr != '\n') {
-      lookup[chr].insert(Coordinate{x++, y});
-
-    } else {
-      ++y;
-      x = 0;
+  for (const auto& [y, line] : Utils::readLines(path) | std::views::enumerate) {
+    for (const auto& [chr, coordinate] :
+         line | std::views::enumerate |
+             std::views::transform(Utils::uncurry([&](auto x, auto chr) {
+               return std::tuple(chr, Coordinate{.x = static_cast<int>(x),
+                                                 .y = static_cast<int>(y)});
+             }))) {
+      lookup[chr].insert(coordinate);
     }
   }
   return lookup;
@@ -90,11 +94,7 @@ using LookupTable =
 }  // namespace Day4
 
 auto main() -> int {
-  const auto file = Utils::readFile("4/input.txt");
-  if (!file) return 1;
-
-  [[maybe_unused]] const auto lookup =
-      Day4::makeLookupTable(std::string_view{*file});
+  const auto lookup = Day4::makeLookupTable("4/input.txt");
 
   fmt::print("Day 4\n-----\n");
   fmt::print("Part 1 | XMAS count : {}\n", Day4::count(lookup, "XMAS"));
