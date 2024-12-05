@@ -47,6 +47,9 @@ build $b/2_setup.o: cxx 2/setup.cc
 build $b/3: link $b/3_main.o $b/utils.a
 build $b/3_main.o: cxx 3/main.cc
 
+build $b/4: link $b/4_main.o $b/utils.a
+build $b/4_main.o: cxx 4/main.cc
+
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
 
