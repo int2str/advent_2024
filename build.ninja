@@ -51,6 +51,11 @@ build $b/4_main.o: cxx 4/main.cc
 build $b/5: link $b/5_main.o $b/utils.a
 build $b/5_main.o: cxx 5/main.cc
 
+build $b/6: link $b/6_main.o $b/6_window.o $b/utils.a
+  libs = -lsfml-graphics -lsfml-window -lsfml-system
+build $b/6_main.o: cxx 6/main.cc
+build $b/6_window.o: cxx 6/window.cc
+
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
 
