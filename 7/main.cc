@@ -28,19 +28,19 @@ struct Concat {
   }
 };
 
-template <typename... TYPES>
-auto tryOp(uint64_t solution, uint64_t accumulated, auto operands, auto&& op,
-           const std::tuple<TYPES...> ops) -> bool {
+template <typename... Ts>
+auto tryOp(uint64_t solution, uint64_t accumulated, auto operands,
+           const auto& op, const std::tuple<Ts...>& ops) -> bool {
   accumulated = op(accumulated, operands.front());
   if (operands.size() == 1) return accumulated == solution;
-  return (tryOp(solution, accumulated, operands.next(), std::get<TYPES>(ops),
-                ops) or
-          ...);
+  return (
+      tryOp(solution, accumulated, operands.next(), std::get<Ts>(ops), ops) or
+      ...);
 }
 
-template <typename... TYPES>
+template <typename... Ts>
 [[nodiscard]] auto tryOps(const Problem& problem,
-                          const std::tuple<TYPES...>& ops) -> bool {
+                          const std::tuple<Ts...>& ops) -> bool {
   if (problem.size() < 3) return false;
 
   const auto solution    = problem.front();
@@ -48,7 +48,7 @@ template <typename... TYPES>
   const auto operands =
       std::ranges::subrange(problem.begin() + 2, problem.end());
 
-  return (tryOp(solution, accumulated, operands, std::get<TYPES>(ops), ops) or
+  return (tryOp(solution, accumulated, operands, std::get<Ts>(ops), ops) or
           ...);
 }
 
