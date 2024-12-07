@@ -9,7 +9,7 @@ namespace {
 
 constexpr auto WINDOW_TITLE = "Advent of Code";
 
-constexpr auto PIXEL_SCALE = 8U;
+constexpr auto PIXEL_SCALE = 10U;
 
 const auto COLOR_BACKGROUND = sf::Color{10, 20, 10};
 const auto COLOR_VISITED    = sf::Color{200, 200, 0};
@@ -41,18 +41,21 @@ Window::Window(const State* state)
                         static_cast<uint32_t>(state->map.size.y) * PIXEL_SCALE},
           WINDOW_TITLE},
       guard_{static_cast<float>(PIXEL_SCALE)},
+      candidate_{static_cast<float>(PIXEL_SCALE)},
       block_{{PIXEL_SCALE, PIXEL_SCALE}},
-      visited_{{PIXEL_SCALE, PIXEL_SCALE}},
-      candidate_{{PIXEL_SCALE, PIXEL_SCALE}} {
+      visited_{{PIXEL_SCALE, PIXEL_SCALE}} {
   window_.setFramerateLimit(frame_limit_);
 
   guard_.setFillColor(COLOR_GUARD);
   guard_.setOrigin(static_cast<float>(PIXEL_SCALE) / HALF,
                    static_cast<float>(PIXEL_SCALE) / HALF);
 
+  candidate_.setFillColor(COLOR_CANDIDATE);
+  candidate_.setOrigin(static_cast<float>(PIXEL_SCALE) / HALF,
+                       static_cast<float>(PIXEL_SCALE) / HALF);
+
   block_.setFillColor(COLOR_BLOCK);
   visited_.setFillColor(COLOR_VISITED);
-  candidate_.setFillColor(COLOR_CANDIDATE);
 
   font_.loadFromFile("6/LiberationSans-Regular.ttf");
 

@@ -12,9 +12,10 @@ class Window {
   sf::RenderWindow window_;
 
   sf::CircleShape guard_;
+  sf::CircleShape candidate_;
+
   sf::RectangleShape block_;
   sf::RectangleShape visited_;
-  sf::RectangleShape candidate_;
 
   sf::Font font_{};
   sf::Text text_{};

@@ -38,9 +38,7 @@ void moveGuard(State& state) {
   return (state.travelled == state.visited.size());
 }
 
-void animate(State state) {
-  state.resetGuard();
-
+void animate(State& state) {
   Window window{&state};
 
   while (window.isOpen()) {
@@ -50,9 +48,7 @@ void animate(State state) {
       case Mode::Tracing: {
         if (guardInBounds(state)) {
           moveGuard(state);
-
         } else {
-          fmt::print("Part 1 | Guard visited     : {}\n", state.visited.size());
           state.switchToProbing();
         }
         break;
@@ -73,8 +69,6 @@ void animate(State state) {
             }
           }
         } else {
-          fmt::print("Part 2 | Possible blockades: {}\n",
-                     state.obstruction_positions);
           state.mode = Mode::Done;
         }
 
@@ -89,17 +83,41 @@ void animate(State state) {
   }
 }
 
+void calculate(State& state) {
+  // Part 1
+  while (guardInBounds(state)) moveGuard(state);
+
+  // Part 2
+  state.switchToProbing();
+  while (!state.candidates.empty()) {
+    moveGuard(state);
+    if (!guardInBounds(state)) {
+      state.nextCandidate();
+
+    } else if (hasLooped(state)) {
+      ++state.obstruction_positions;
+      state.nextCandidate();
+    }
+  }
+}
+
 }  // namespace Day6
 
 auto main(int argc, char** argv) -> int {
   const auto args = std::span(argv, static_cast<size_t>(argc));
 
+  auto state = State{.map = Map::fromFile("6/input.txt")};
+  state.resetGuard();
+
   fmt::print("Day 6\n-----\n");
   if (args.size() < 2) {
-    fmt::print("Command line gets to sit this one out...\n\n");
-    return 0;
+    Day6::calculate(state);
+  } else {
+    Day6::animate(state);
   }
 
-  auto state = State{.map = Map::fromFile("6/input.txt")};
-  Day6::animate(state);
+  fmt::print("Part 1 | Guard visited     : {}\n",
+             state.candidates_attempted + 1);
+  fmt::print("Part 2 | Possible blockades: {}\n\n",
+             state.obstruction_positions);
 }
