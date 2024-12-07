@@ -1,6 +1,7 @@
 #ifndef COORDINATE_HH
 #define COORDINATE_HH
 
+#include <cstdint>
 // For std::hash():
 #include <unordered_set>  // IWYU pragma: keep
 
@@ -16,6 +17,12 @@ struct Coordinate {
   }
 
   void rotateCW() { *this = Coordinate{-y, x}; }
+
+  [[nodiscard]] constexpr auto idx() const -> uint16_t {
+    // NOLINTNEXTLINE
+    return static_cast<uint16_t>((static_cast<uint16_t>(y) << 8) +
+                                 (static_cast<uint16_t>(x) & 0xFF));  // NOLINT
+  }
 };
 
 struct CoordinateHash {

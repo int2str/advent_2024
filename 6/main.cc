@@ -6,8 +6,6 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include <unordered_set>
-
 #include "coordinate.hh"
 #include "state.hh"
 #include "window.hh"
@@ -20,9 +18,9 @@ namespace Day6 {
 }
 
 void moveGuard(State& state) {
-  state.visited.insert(state.guard_at);
+  state.visited.set(state.guard_at.idx());
   auto new_position = state.guard_at + state.guard_direction;
-  while (state.map.blocks.contains(new_position)) {
+  while (state.map.blocked.test(new_position.idx())) {
     state.guard_direction.rotateCW();
     new_position = state.guard_at + state.guard_direction;
   }
@@ -30,7 +28,7 @@ void moveGuard(State& state) {
 }
 
 [[nodiscard]] auto hasLooped(State& state) -> bool {
-  if (!state.visited.contains(state.guard_at)) {
+  if (!state.visited.test(state.guard_at.idx())) {
     state.travelled = 0;
   } else {
     ++state.travelled;
@@ -108,6 +106,8 @@ auto main(int argc, char** argv) -> int {
 
   auto state = State{.map = Map::fromFile("6/input.txt")};
   state.resetGuard();
+
+  fmt::print("{}\n", state.map.size.x);
 
   fmt::print("Day 6\n-----\n");
   if (args.size() < 2) {

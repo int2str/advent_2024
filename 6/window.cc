@@ -101,13 +101,19 @@ void Window::handleEvents() {
 
 void Window::draw() {
   window_.clear(COLOR_BACKGROUND);
-  drawBlocks(window_, block_, state_->map.blocks);
+
+  for (int y = 0; y != state_->map.size.y; ++y) {
+    for (int x = 0; x != state_->map.size.x; ++x) {
+      const auto pos = Coordinate{x, y};
+      if (state_->map.blocked.test(pos.idx())) drawBlock(window_, block_, pos);
+      if (state_->visited.test(pos.idx())) drawBlock(window_, visited_, pos);
+    }
+  }
 
   if (state_->mode == Mode::Tracing) {
-    drawBlocks(window_, visited_, state_->visited);
     drawBlock(window_, guard_, state_->guard_at);
 
-    text_.setString(std::format("Steps: {}", state_->visited.size()));
+    text_.setString(std::format("Steps: {}", state_->visited.count()));
   }
 
   if (state_->mode == Mode::Probing) {

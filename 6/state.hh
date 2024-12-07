@@ -2,7 +2,7 @@
 #define STATE_HH
 
 #include <cstdint>
-#include <unordered_set>
+#include <vector>
 
 #include "coordinate.hh"
 #include "map.hh"
@@ -16,14 +16,27 @@ struct State {
   Coordinate guard_at{};
   Coordinate guard_direction{};
 
-  std::unordered_set<Coordinate, CoordinateHash> visited{};
-  std::unordered_set<Coordinate, CoordinateHash> candidates{};
+  MapBits visited{};
+  std::vector<Coordinate> candidates{};
 
   Coordinate candidate_at{};
 
   size_t candidates_attempted{};
   size_t obstruction_positions{};
   size_t travelled{};
+
+  void makeCandidates() {
+    candidates.clear();
+    candidates.reserve(visited.size());
+
+    for (int y = 0; y != map.size.y; ++y) {
+      for (int x = 0; x != map.size.x; ++x) {
+        const auto pos = Coordinate{x, y};
+        if (visited.test(pos.idx()) and pos != map.guard)
+          candidates.push_back(pos);
+      }
+    }
+  }
 
   void resetGuard() {
     guard_at        = map.guard;
@@ -33,19 +46,18 @@ struct State {
   }
 
   void switchToProbing() {
-    mode       = Mode::Probing;
-    candidates = visited;
-    candidates.erase(map.guard);
+    makeCandidates();
+    mode                  = Mode::Probing;
     candidates_attempted  = {};
     obstruction_positions = {};
     nextCandidate();
   }
 
   void nextCandidate() {
-    if (candidates_attempted++ != 0) map.blocks.erase(candidate_at);
-    candidate_at = *candidates.begin();
-    candidates.erase(candidates.begin());
-    map.blocks.insert(candidate_at);
+    if (candidates_attempted++ != 0) map.blocked.reset(candidate_at.idx());
+    candidate_at = candidates.back();
+    candidates.pop_back();
+    map.blocked.set(candidate_at.idx());
     resetGuard();
   };
 };
