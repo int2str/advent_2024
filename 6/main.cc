@@ -107,8 +107,6 @@ auto main(int argc, char** argv) -> int {
   auto state = State{.map = Map::fromFile("6/input.txt")};
   state.resetGuard();
 
-  fmt::print("{}\n", state.map.size.x);
-
   fmt::print("Day 6\n-----\n");
   if (args.size() < 2) {
     Day6::calculate(state);

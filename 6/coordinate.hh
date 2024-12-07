@@ -2,8 +2,6 @@
 #define COORDINATE_HH
 
 #include <cstdint>
-// For std::hash():
-#include <unordered_set>  // IWYU pragma: keep
 
 struct Coordinate {
   int x;
@@ -22,14 +20,6 @@ struct Coordinate {
     // NOLINTNEXTLINE
     return static_cast<uint16_t>((static_cast<uint16_t>(y) << 8) +
                                  (static_cast<uint16_t>(x) & 0xFF));  // NOLINT
-  }
-};
-
-struct CoordinateHash {
-  [[nodiscard]] constexpr auto operator()(const Coordinate& coord) const
-      -> int {
-    return static_cast<int>(std::hash<int>()(coord.x) ^
-                            std::hash<int>()(coord.y));
   }
 };
 
