@@ -1,7 +1,8 @@
 #!/bin/bash
-build/1
-build/2
-build/3
-build/4
-build/5
-build/6
+
+DAYS=7;
+
+for ((day=1; day<=DAYS; ++day))
+do
+  ./build/${day}
+done

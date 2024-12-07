@@ -56,6 +56,9 @@ build $b/6: link $b/6_main.o $b/6_window.o $b/utils.a
 build $b/6_main.o: cxx 6/main.cc
 build $b/6_window.o: cxx 6/window.cc
 
+build $b/7: link $b/7_main.o $b/utils.a
+build $b/7_main.o: cxx 7/main.cc
+
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
 
