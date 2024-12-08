@@ -22,7 +22,7 @@ template <typename T>
 struct Concat {
   [[nodiscard]] constexpr auto operator()(T a, T b) const -> T {
     auto result     = T{};
-    const auto both = std::format("{}{}", a, b);
+    const auto both = fmt::format("{}{}", a, b);
     std::from_chars(both.data(), both.data() + both.size(), result);
     return result;
   }
