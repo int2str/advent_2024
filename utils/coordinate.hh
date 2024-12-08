@@ -7,18 +7,35 @@
 #include <limits>
 
 struct Coordinate {
-  int x;
-  int y;
+  int x{};
+  int y{};
 
   [[nodiscard]] constexpr auto operator<=>(const Coordinate&) const = default;
 
-  [[nodiscard]] constexpr auto operator+(const Coordinate& rhs) const
-      -> Coordinate {
-    return {.x = x + rhs.x, .y = y + rhs.y};
+  constexpr auto operator+=(const Coordinate& other) -> Coordinate& {
+    x += other.x;
+    y += other.y;
+    return *this;
+  }
+
+  constexpr auto operator-=(const Coordinate& other) -> Coordinate& {
+    x -= other.x;
+    y -= other.y;
+    return *this;
   }
 
   void rotateCW() { *this = Coordinate{-y, x}; }
 };
+
+[[nodiscard]] constexpr auto operator+(const Coordinate& lhs,
+                                       const Coordinate& rhs) -> Coordinate {
+  return {.x = lhs.x + rhs.x, .y = lhs.y + rhs.y};
+}
+
+[[nodiscard]] constexpr auto operator-(const Coordinate& lhs,
+                                       const Coordinate& rhs) -> Coordinate {
+  return {.x = lhs.x - rhs.x, .y = lhs.y - rhs.y};
+}
 
 struct CoordinateHash {
   [[nodiscard]] constexpr auto operator()(const Coordinate& coord) const
@@ -82,6 +99,10 @@ class CoordinateSet {
     [[nodiscard]] constexpr auto operator<=>(const Iterator&) const = default;
   };
 
+  using const_iterator = Iterator;
+  using iterator       = Iterator;
+  using value_type     = Coordinate;
+
   constexpr void insert(const Coordinate& coordinate) {
     bits_.set(idxFor(coordinate));
   }
@@ -110,6 +131,24 @@ class CoordinateSet {
 
   [[nodiscard]] constexpr auto end() const -> Iterator {
     return Iterator{&bits_, bits_.size()};
+  }
+};
+
+// --------------------------------------------------------------------------------
+
+#include <fmt/format.h>
+
+template <>
+struct fmt::formatter<Coordinate> {
+  template <typename ParseContext>
+  constexpr auto parse(ParseContext& ctx) {
+    return ctx.begin();
+  }
+
+  template <typename FormatContext>
+  auto format(const Coordinate& coordinate, FormatContext& ctx) const {
+    return fmt::format_to(ctx.out(), "{}/{}", coordinate.y + 1,
+                          coordinate.x + 1);
   }
 };
 

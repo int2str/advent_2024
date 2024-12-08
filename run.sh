@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DAYS=7;
+DAYS=8;
 
 for ((day=1; day<=DAYS; ++day))
 do
