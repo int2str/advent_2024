@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "state.hh"
+#include "utils/coordinate.hh"
 
 namespace {
 
@@ -102,13 +103,8 @@ void Window::handleEvents() {
 void Window::draw() {
   window_.clear(COLOR_BACKGROUND);
 
-  for (int y = 0; y != state_->map.size.y; ++y) {
-    for (int x = 0; x != state_->map.size.x; ++x) {
-      const auto pos = Coordinate{x, y};
-      if (state_->map.blocked.test(pos.idx())) drawBlock(window_, block_, pos);
-      if (state_->visited.test(pos.idx())) drawBlock(window_, visited_, pos);
-    }
-  }
+  for (const auto& pos : state_->map.blocked) drawBlock(window_, block_, pos);
+  for (const auto& pos : state_->visited) drawBlock(window_, visited_, pos);
 
   if (state_->mode == Mode::Tracing) {
     drawBlock(window_, guard_, state_->guard_at);

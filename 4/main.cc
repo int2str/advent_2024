@@ -10,33 +10,13 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "utils/coordinate.hh"
 #include "utils/curry.hh"
 #include "utils/read_file.hh"
 
 namespace Day4 {
 
-struct Coordinate {
-  int x;
-  int y;
-
-  [[nodiscard]] constexpr auto operator<=>(const Coordinate&) const = default;
-
-  [[nodiscard]] constexpr auto operator+(const Coordinate& rhs) const
-      -> Coordinate {
-    return {.x = x + rhs.x, .y = y + rhs.y};
-  }
-};
-
-struct CoordinateHash {
-  [[nodiscard]] constexpr auto operator()(const Coordinate& coord) const
-      -> int {
-    return static_cast<int>(std::hash<int>()(coord.x) ^
-                            std::hash<int>()(coord.y));
-  }
-};
-
-using LookupTable =
-    std::unordered_map<char, std::unordered_set<Coordinate, CoordinateHash>>;
+using LookupTable = std::unordered_map<char, CoordinateSet>;
 
 [[nodiscard]] auto makeLookupTable(const std::filesystem::path& path)
     -> LookupTable {
@@ -71,7 +51,7 @@ using LookupTable =
   };
 
   const auto complete =
-      std::views::cartesian_product(lookup.at(what.front()),
+      std::views::cartesian_product(lookup.at(*what.begin()),
                                     std::views::iota(-1, 2),
                                     std::views::iota(-1, 2)) |
       std::views::transform(Utils::uncurry(search_in_direction));

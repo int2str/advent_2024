@@ -6,8 +6,8 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-#include "coordinate.hh"
 #include "state.hh"
+#include "utils/coordinate.hh"
 #include "window.hh"
 
 namespace Day6 {
@@ -18,9 +18,9 @@ namespace Day6 {
 }
 
 void moveGuard(State& state) {
-  state.visited.set(state.guard_at.idx());
+  state.visited.insert(state.guard_at);
   auto new_position = state.guard_at + state.guard_direction;
-  while (state.map.blocked.test(new_position.idx())) {
+  while (state.map.blocked.contains(new_position)) {
     state.guard_direction.rotateCW();
     new_position = state.guard_at + state.guard_direction;
   }
@@ -28,7 +28,7 @@ void moveGuard(State& state) {
 }
 
 [[nodiscard]] auto hasLooped(State& state) -> bool {
-  if (!state.visited.test(state.guard_at.idx())) {
+  if (!state.visited.contains(state.guard_at)) {
     state.travelled = 0;
   } else {
     ++state.travelled;
@@ -53,9 +53,9 @@ void animate(State& state) {
       }
 
       case Mode::Probing: {
-        if (!state.candidates.empty()) {
+        if (!state.noMoreCandidates()) {
           const auto last = state.candidates_attempted;
-          while (!state.candidates.empty() and
+          while (!state.noMoreCandidates() and
                  state.candidates_attempted == last) {
             moveGuard(state);
             if (!guardInBounds(state)) {
@@ -87,7 +87,7 @@ void calculate(State& state) {
 
   // Part 2
   state.switchToProbing();
-  while (!state.candidates.empty()) {
+  while (!state.noMoreCandidates()) {
     moveGuard(state);
     if (!guardInBounds(state)) {
       state.nextCandidate();

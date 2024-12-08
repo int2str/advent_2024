@@ -1,20 +1,16 @@
 #ifndef MAP_HH
 #define MAP_HH
 
-#include <bitset>
 #include <filesystem>
 #include <ranges>
 
-#include "coordinate.hh"
+#include "utils/coordinate.hh"
 #include "utils/read_file.hh"
-
-// This limits us to 256x256...
-using MapBits = std::bitset<65'536>;  // NOLINT
 
 struct Map {
   Coordinate size{};
   Coordinate guard{};
-  MapBits blocked{};  // NOLINT
+  CoordinateSet blocked{};  // NOLINT
 
   static constexpr auto start_direction = Coordinate{0, -1};
 
@@ -28,7 +24,7 @@ struct Map {
         const auto pos =
             Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
         if (chr == '^') map.guard = pos;
-        if (chr == '#') map.blocked.set(pos.idx());
+        if (chr == '#') map.blocked.insert(pos);
       }
     }
     return map;
