@@ -62,6 +62,9 @@ build $b/7_main.o: cxx 7/main.cc
 build $b/8: link $b/8_main.o $b/utils.a
 build $b/8_main.o: cxx 8/main.cc
 
+build $b/9: link $b/9_main.o $b/utils.a
+build $b/9_main.o: cxx 9/main.cc
+
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
 
