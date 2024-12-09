@@ -12,7 +12,7 @@
 
 #include "utils/coordinate.hh"
 #include "utils/curry.hh"
-#include "utils/nm_iterator.hh"
+#include "utils/nm_view.hh"
 #include "utils/read_file.hh"
 
 namespace Day8 {
@@ -61,7 +61,7 @@ struct Map {
   };
 
   for (const auto& [_, antennae] : map.frequencies) {
-    for (auto [a, b] : nm_const_view(antennae)) {
+    for (auto [a, b] : Utils::nm_const_view(antennae)) {
       add_node(*a + (*a - *b));
       add_node(*b + (*b - *a));
     }
@@ -82,7 +82,7 @@ struct Map {
   };
 
   for (const auto& [_, antennae] : map.frequencies) {
-    for (auto [a, b] : nm_const_view(antennae)) {
+    for (auto [a, b] : Utils::nm_const_view(antennae)) {
       const auto diff = *a - *b;
       auto nodes_plus = *a + diff;
       while (add_node(nodes_plus)) nodes_plus += diff;

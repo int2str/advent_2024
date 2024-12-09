@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "utils/nm_view.hh"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
 
@@ -74,15 +75,8 @@ using Manuals = std::vector<Pages>;
   };
 
   const auto reorder = [&](auto pages) {
-    for (auto before = pages.begin(); before != pages.end() - 1; ++before) {
-      for (auto after = std::next(before); after != pages.end(); ++after) {
-        if (rules.at(*after).contains(*before)) std::swap(*before, *after);
-        // We COULD break early here, if the order is now valid.
-        // But, at least on my machine, NOT checking and seeing
-        // out the loop is actually MUCH faster...
-      }
-    }
-
+    for (auto [before, after] : Utils::nm_view(pages))
+      if (rules.at(*after).contains(*before)) std::swap(*before, *after);
     return pages;
   };
 
