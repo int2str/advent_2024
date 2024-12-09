@@ -3,9 +3,7 @@
 // https://adventofcode.com/2024/day/9
 //
 
-#include <fmt/base.h>
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 
 #include <algorithm>
 #include <ranges>
