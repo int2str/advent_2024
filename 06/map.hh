@@ -2,6 +2,7 @@
 #define DAY_6_MAP_HH
 
 #include "utils/coordinate.hh"
+#include "utils/coordinate_set.hh"
 
 namespace Day6 {
 

@@ -10,6 +10,7 @@
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/coordinate_map.hh"
+#include "utils/coordinate_set.hh"
 #include "utils/read_file.hh"
 #include "utils/xy_array.hh"
 

@@ -10,6 +10,7 @@
 
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
+#include "utils/coordinate_set.hh"
 #include "utils/curry.hh"
 #include "utils/read_file.hh"
 

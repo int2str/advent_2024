@@ -5,6 +5,7 @@
 
 #include "map.hh"
 #include "utils/coordinate.hh"
+#include "utils/coordinate_set.hh"
 
 namespace Day6 {
 
