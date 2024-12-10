@@ -15,21 +15,22 @@
 
 namespace Day4 {
 
-using LookupTable = std::unordered_map<char, CoordinateSet>;
+using LookupTable = std::unordered_map<char, Utils::CoordinateSet>;
 
 [[nodiscard]] auto makeLookupTable(const std::filesystem::path& path)
     -> LookupTable {
   auto lookup = LookupTable{};
   Utils::readFileXY(path, [&](auto x, auto y, auto chr) {
     lookup[chr].insert(
-        Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)});
+        Utils::Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)});
   });
   return lookup;
 }
 
 [[nodiscard]] constexpr auto search(const LookupTable& lookup,
-                                    std::string_view what, Coordinate from,
-                                    Coordinate direction) -> bool {
+                                    std::string_view what,
+                                    Utils::Coordinate from,
+                                    Utils::Coordinate direction) -> bool {
   if (what.empty()) return true;
   return lookup.at(what.front()).contains(from + direction) and
          search(lookup, what.substr(1), from + direction, direction);
@@ -37,7 +38,7 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
 
 [[nodiscard]] constexpr auto xmas(const LookupTable& lookup,
                                   std::string_view what) -> int64_t {
-  const auto search_in_direction = [&](Coordinate from, int x_direction,
+  const auto search_in_direction = [&](Utils::Coordinate from, int x_direction,
                                        int y_direction) {
     return (x_direction != 0 || y_direction != 0) and
            search(lookup, what.substr(1), from, {x_direction, y_direction});
@@ -52,16 +53,19 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
 }
 
 [[nodiscard]] auto x_mas(const LookupTable& lookup) -> int64_t {
-  const auto check_diagonal = [&](Coordinate c1, Coordinate c2) {
+  const auto check_diagonal = [&](Utils::Coordinate c1, Utils::Coordinate c2) {
     return (lookup.at('M').contains(c1) and lookup.at('S').contains(c2)) or
            (lookup.at('S').contains(c1) and lookup.at('M').contains(c2));
   };
 
   const auto& As = lookup.at('A');
-  return std::ranges::count_if(std::begin(As), std::end(As), [&](Coordinate A) {
-    return check_diagonal(A + Coordinate{-1, -1}, A + Coordinate{1, 1}) and
-           check_diagonal(A + Coordinate{1, -1}, A + Coordinate{-1, 1});
-  });
+  return std::ranges::count_if(
+      std::begin(As), std::end(As), [&](Utils::Coordinate A) {
+        return check_diagonal(A + Utils::Coordinate{-1, -1},
+                              A + Utils::Coordinate{1, 1}) and
+               check_diagonal(A + Utils::Coordinate{1, -1},
+                              A + Utils::Coordinate{-1, 1});
+      });
 }
 
 }  // namespace Day4

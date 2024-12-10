@@ -14,14 +14,14 @@ struct State {
   Map map;
   Mode mode = Mode::Tracing;
 
-  Coordinate guard_at{};
-  Coordinate guard_direction{};
+  Utils::Coordinate guard_at{};
+  Utils::Coordinate guard_direction{};
 
-  CoordinateSet visited{};
-  CoordinateSet candidates{};
-  CoordinateSet::Iterator next_candidate{};
+  Utils::CoordinateSet visited{};
+  Utils::CoordinateSet candidates{};
+  Utils::CoordinateSet::Iterator next_candidate{};
 
-  Coordinate candidate_at{};
+  Utils::Coordinate candidate_at{};
 
   size_t candidates_attempted{};
   size_t obstruction_positions{};

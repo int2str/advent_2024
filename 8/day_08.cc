@@ -13,15 +13,15 @@
 
 namespace Day8 {
 
-using LookupTable = std::unordered_map<char, CoordinateSet>;
+using LookupTable = std::unordered_map<char, Utils::CoordinateSet>;
 
 struct Map {
   LookupTable frequencies;
-  CoordinateSet antennae;
-  Coordinate size;
+  Utils::CoordinateSet antennae;
+  Utils::Coordinate size;
 
-  [[nodiscard]] constexpr auto inBounds(const Coordinate& coordinate) const
-      -> bool {
+  [[nodiscard]] constexpr auto inBounds(
+      const Utils::Coordinate& coordinate) const -> bool {
     return coordinate.x >= 0 and coordinate.y >= 0 and coordinate.x < size.x and
            coordinate.y < size.y;
   };
@@ -29,7 +29,7 @@ struct Map {
   // NOLINTNEXTLINE
   void operator()(size_t x, size_t y, char chr) {
     const auto coordinate =
-        Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
+        Utils::Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
     size.x = std::max(size.x, coordinate.x + 1);
     size.y = std::max(size.y, coordinate.y + 1);
     if (chr != '.') {
@@ -40,9 +40,9 @@ struct Map {
 };
 
 [[nodiscard]] auto antiNodes(const Map& map) -> size_t {
-  auto anti_nodes = CoordinateSet{};
+  auto anti_nodes = Utils::CoordinateSet{};
 
-  const auto add_node = [&](const Coordinate& coordinate) {
+  const auto add_node = [&](const Utils::Coordinate& coordinate) {
     if (map.inBounds(coordinate)) anti_nodes.insert(coordinate);
   };
 
@@ -59,7 +59,7 @@ struct Map {
 [[nodiscard]] auto harmonicAntiNodes(const Map& map) -> size_t {
   auto anti_nodes = map.antennae;
 
-  const auto add_node = [&](const Coordinate& coordinate) {
+  const auto add_node = [&](const Utils::Coordinate& coordinate) {
     if (map.inBounds(coordinate)) {
       anti_nodes.insert(coordinate);
       return true;

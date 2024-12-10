@@ -6,6 +6,8 @@
 #include <cwchar>
 #include <limits>
 
+namespace Utils {
+
 struct Coordinate {
   int x{};
   int y{};
@@ -134,19 +136,21 @@ class CoordinateSet {
   }
 };
 
+}  // namespace Utils
+
 // --------------------------------------------------------------------------------
 
 #include <fmt/format.h>
 
 template <>
-struct fmt::formatter<Coordinate> {
+struct fmt::formatter<Utils::Coordinate> {
   template <typename ParseContext>
   constexpr auto parse(ParseContext& ctx) {
     return ctx.begin();
   }
 
   template <typename FormatContext>
-  auto format(const Coordinate& coordinate, FormatContext& ctx) const {
+  auto format(const Utils::Coordinate& coordinate, FormatContext& ctx) const {
     return fmt::format_to(ctx.out(), "{}/{}", coordinate.y + 1,
                           coordinate.x + 1);
   }
