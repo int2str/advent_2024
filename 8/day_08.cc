@@ -27,29 +27,18 @@ struct Map {
     return coordinate.x >= 0 and coordinate.y >= 0 and coordinate.x < size.x and
            coordinate.y < size.y;
   };
-};
 
-[[nodiscard]] auto makeMap(const std::filesystem::path& path) -> Map {
-  auto map = Map{};
-  for (const auto& [y, line] : Utils::readLines(path) | std::views::enumerate) {
-    map.size.y = static_cast<int>(y + 1);
-    map.size.x = static_cast<int>(line.length());
-    auto chars =
-        line                     //
-        | std::views::enumerate  //
-        | std::views::filter(
-              [](const auto& tuple) { return std::get<1>(tuple) != '.'; })  //
-        | std::views::transform(Utils::uncurry([&](int x, auto frequency_code) {
-            return std::tuple(frequency_code,
-                              Coordinate{.x = x, .y = static_cast<int>(y)});
-          }));
-    for (const auto& [frequency_code, antenna] : chars) {
-      map.frequencies[frequency_code].insert(antenna);
-      map.antennae.insert(antenna);
+  void operator()(size_t x, size_t y, char chr) {
+    const auto coordinate =
+        Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
+    size.x = std::max(size.x, coordinate.x + 1);
+    size.y = std::max(size.y, coordinate.y + 1);
+    if (chr != '.') {
+      frequencies[chr].insert(coordinate);
+      antennae.insert(coordinate);
     }
   }
-  return map;
-}
+};
 
 [[nodiscard]] auto antiNodes(const Map& map) -> size_t {
   auto anti_nodes = CoordinateSet{};
@@ -95,13 +84,13 @@ struct Map {
 }  // namespace Day8
 
 TEST(Day_08_Resonant_Collinearity_SAMPLE) {
-  const auto map = Day8::makeMap("8/sample.txt");
+  const auto map = Utils::readFileXY("8/sample.txt", Day8::Map{});
   EXPECT_EQ(Day8::antiNodes(map), 14);
   EXPECT_EQ(Day8::harmonicAntiNodes(map), 34);
 }
 
 TEST(Day_08_Resonant_Collinearity_FINAL) {
-  const auto map = Day8::makeMap("8/input.txt");
+  const auto map = Utils::readFileXY("8/input.txt", Day8::Map{});
   EXPECT_EQ(Day8::antiNodes(map), 336);
   EXPECT_EQ(Day8::harmonicAntiNodes(map), 1131);
 }

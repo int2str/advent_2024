@@ -6,7 +6,7 @@
 #include "state.hh"
 #include "utils/coordinate.hh"
 
-namespace {
+namespace Day6 {
 
 constexpr auto WINDOW_TITLE = "Advent of Code";
 
@@ -32,8 +32,6 @@ auto drawBlock(sf::RenderWindow& window, auto& item, const auto& position) {
 auto drawBlocks(sf::RenderWindow& window, auto& item, const auto& positions) {
   for (const auto& position : positions) drawBlock(window, item, position);
 }
-
-}  // namespace
 
 Window::Window(const State* state)
     : state_{state},
@@ -132,3 +130,5 @@ void Window::draw() {
   window_.draw(text_);
   window_.display();
 }
+
+}  // namespace Day6

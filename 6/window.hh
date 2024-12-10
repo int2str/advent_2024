@@ -1,9 +1,11 @@
-#ifndef WINDOW_HH
-#define WINDOW_HH
+#ifndef DAY_6_WINDOW_HH
+#define DAY_6_WINDOW_HH
 
 #include <SFML/Graphics.hpp>
 
 #include "state.hh"
+
+namespace Day6 {
 
 constexpr auto DEFAULT_FRAMERATE = 30U;
 
@@ -31,4 +33,6 @@ class Window {
   void draw();
 };
 
-#endif  // WINDOW_HH
+}  // namespace Day6
+
+#endif  // DAY_6_WINDOW_HH

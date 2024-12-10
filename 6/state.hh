@@ -1,10 +1,12 @@
-#ifndef STATE_HH
-#define STATE_HH
+#ifndef DAY_6_STATE_HH
+#define DAY_6_STATE_HH
 
 #include <cstdint>
 
 #include "map.hh"
 #include "utils/coordinate.hh"
+
+namespace Day6 {
 
 enum class Mode : uint8_t { Tracing, Probing, Done };
 
@@ -60,4 +62,6 @@ struct State {
   }
 };
 
-#endif  // STATE_HH
+}  // namespace Day6
+
+#endif  // DAY_6_STATE_HH

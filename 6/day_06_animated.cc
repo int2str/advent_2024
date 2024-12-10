@@ -3,8 +3,10 @@
 // https://adventofcode.com/2024/day/6
 //
 
+#include "map.hh"
 #include "state.hh"
 #include "utils/coordinate.hh"
+#include "utils/read_file.hh"
 #include "window.hh"
 
 namespace Day6 {
@@ -82,6 +84,7 @@ void animate(State& state) {
 }  // namespace Day6
 
 auto main() -> int {
-  auto state = State{.map = Map::fromFile("6/input.txt")};
+  auto state =
+      Day6::State{.map = Utils::readFileXY("6/input.txt", Day6::Map{})};
   Day6::animate(state);
 }

@@ -20,16 +20,10 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
 [[nodiscard]] auto makeLookupTable(const std::filesystem::path& path)
     -> LookupTable {
   auto lookup = LookupTable{};
-  for (const auto& [y, line] : Utils::readLines(path) | std::views::enumerate) {
-    for (const auto& [chr, coordinate] :
-         line | std::views::enumerate |
-             std::views::transform(Utils::uncurry([&](auto x, auto chr) {
-               return std::tuple(chr, Coordinate{.x = static_cast<int>(x),
-                                                 .y = static_cast<int>(y)});
-             }))) {
-      lookup[chr].insert(coordinate);
-    }
-  }
+  Utils::readFileXY(path, [&](auto x, auto y, auto chr) {
+    lookup[chr].insert(
+        Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)});
+  });
   return lookup;
 }
 
