@@ -4,12 +4,10 @@
 //
 
 #include <filesystem>
-#include <ranges>
 #include <unordered_map>
 
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
-#include "utils/curry.hh"
 #include "utils/nm_view.hh"
 #include "utils/read_file.hh"
 
@@ -28,6 +26,7 @@ struct Map {
            coordinate.y < size.y;
   };
 
+  // NOLINTNEXTLINE
   void operator()(size_t x, size_t y, char chr) {
     const auto coordinate =
         Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
