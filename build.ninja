@@ -36,6 +36,9 @@ rule tidy
     command = clang-tidy -p . --quiet --header-filter=.* 1/*.cc
     description = TIDY
 
+build $b/wip: link $b/wip.o $b/utils.a
+build $b/wip.o: cxx wip/wip.cc
+
 build $b/advent2024: link $b/testrunner_main.o $
   $b/day_01.o $
   $b/day_02.o $
