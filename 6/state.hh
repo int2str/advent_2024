@@ -2,7 +2,6 @@
 #define STATE_HH
 
 #include <cstdint>
-#include <vector>
 
 #include "map.hh"
 #include "utils/coordinate.hh"
@@ -39,16 +38,21 @@ struct State {
     next_candidate = candidates.begin();
 
     mode                  = Mode::Probing;
-    candidates_attempted  = {};
+    candidates_attempted  = 1;
     obstruction_positions = {};
-    nextCandidate();
+    candidate_at          = *next_candidate;
+    map.blocked.insert(candidate_at);
+    resetGuard();
   }
 
   void nextCandidate() {
-    if (candidates_attempted++ != 0) map.blocked.erase(candidate_at);
-    candidate_at = *next_candidate++;
-    map.blocked.insert(candidate_at);
-    resetGuard();
+    map.blocked.erase(candidate_at);
+    if (++next_candidate != candidates.end()) {
+      ++candidates_attempted;
+      candidate_at = *next_candidate;
+      map.blocked.insert(candidate_at);
+      resetGuard();
+    }
   };
 
   [[nodiscard]] constexpr auto noMoreCandidates() const -> bool {

@@ -3,11 +3,12 @@
 // https://adventofcode.com/2024/day/9
 //
 
-#include <fmt/core.h>
-
 #include <algorithm>
+#include <filesystem>
 #include <ranges>
+#include <vector>
 
+#include "testrunner/testrunner.h"
 #include "utils/read_file.hh"
 
 namespace Day9 {
@@ -32,6 +33,14 @@ struct BlockMaker {
     return {.empty = empty, .size = (chr - '0'), .id = (empty ? 0 : id++)};
   }
 };
+
+[[nodiscard]] auto readBlocks(const std::filesystem::path& path)
+    -> std::vector<Block> {
+  return Utils::readFile(path)                                       //
+         | std::views::filter([](auto chr) { return chr != '\n'; })  //
+         | std::views::transform(Day9::BlockMaker{})                 //
+         | std::ranges::to<std::vector>();
+}
 
 [[nodiscard]] auto fragment(std::vector<Block> blocks) -> std::vector<Block> {
   auto out = std::vector<Block>{};
@@ -99,16 +108,14 @@ struct BlockMaker {
 
 }  // namespace Day9
 
-auto main() -> int {
-  const auto blocks =
-      Utils::readFile("9/input.txt")                              //
-      | std::views::filter([](auto chr) { return chr != '\n'; })  //
-      | std::views::transform(Day9::BlockMaker{})                 //
-      | std::ranges::to<std::vector>();
+TEST(Day_09_Disk_Fragmenter_SAMPLE) {
+  const auto blocks = Day9::readBlocks("9/sample.txt");
+  EXPECT_EQ(Day9::checksum(Day9::fragment(blocks)), 1928);
+  EXPECT_EQ(Day9::checksum(Day9::defrag(blocks)), 2858);
+}
 
-  fmt::print("Day 9\n-----\n");
-  fmt::print("Part 1 | Filesystem checksum  : {}\n",
-             Day9::checksum(Day9::fragment(blocks)));
-  fmt::print("Part 2 | Defragmented checksum: {}\n\n",
-             Day9::checksum(Day9::defrag(blocks)));
+TEST(Day_09_Disk_Fragmenter_FINAL) {
+  const auto blocks = Day9::readBlocks("9/input.txt");
+  EXPECT_EQ(Day9::checksum(Day9::fragment(blocks)), 6242766523059ULL);
+  EXPECT_EQ(Day9::checksum(Day9::defrag(blocks)), 6272188244509ULL);
 }

@@ -3,9 +3,6 @@
 // https://adventofcode.com/2024/day/6
 //
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-
 #include "state.hh"
 #include "utils/coordinate.hh"
 #include "window.hh"
@@ -38,6 +35,7 @@ void moveGuard(State& state) {
 
 void animate(State& state) {
   Window window{&state};
+  state.resetGuard();
 
   while (window.isOpen()) {
     window.handleEvents();
@@ -67,6 +65,7 @@ void animate(State& state) {
             }
           }
         } else {
+          fmt::print(" # {} #\n", state.candidate_at);
           state.mode = Mode::Done;
         }
 
@@ -81,41 +80,9 @@ void animate(State& state) {
   }
 }
 
-void calculate(State& state) {
-  // Part 1
-  while (guardInBounds(state)) moveGuard(state);
-
-  // Part 2
-  state.switchToProbing();
-  while (!state.noMoreCandidates()) {
-    moveGuard(state);
-    if (!guardInBounds(state)) {
-      state.nextCandidate();
-
-    } else if (hasLooped(state)) {
-      ++state.obstruction_positions;
-      state.nextCandidate();
-    }
-  }
-}
-
 }  // namespace Day6
 
-auto main(int argc, char** argv) -> int {
-  const auto args = std::span(argv, static_cast<size_t>(argc));
-
+auto main() -> int {
   auto state = State{.map = Map::fromFile("6/input.txt")};
-  state.resetGuard();
-
-  fmt::print("Day 6\n-----\n");
-  if (args.size() < 2) {
-    Day6::calculate(state);
-  } else {
-    Day6::animate(state);
-  }
-
-  fmt::print("Part 1 | Guard visited     : {}\n",
-             state.candidates_attempted + 1);
-  fmt::print("Part 2 | Possible blockades: {}\n\n",
-             state.obstruction_positions);
+  Day6::animate(state);
 }

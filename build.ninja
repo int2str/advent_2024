@@ -4,7 +4,7 @@ ar = ar
 builddir = build
 b = $builddir
 
-cflags = -O3 -g -std=c++23 -Wextra -Wconversion -Wall -pedantic -Werror -I. 
+cflags = -O3 -g -std=c++23 -Wextra -Wconversion -Wall -pedantic -Werror -I. -Itestrunner/include
 ldflags = -Wl,--gc-sections -Wl,--relax -L$b -lfmt
 
 rule cxx
@@ -36,34 +36,34 @@ rule tidy
     command = clang-tidy -p . --quiet --header-filter=.* 1/*.cc
     description = TIDY
 
-build $b/1: link $b/1_main.o $b/utils.a
-build $b/1_main.o: cxx 1/main.cc
+build $b/advent2024: link $b/testrunner_main.o $
+  $b/day_01.o $
+  $b/day_02.o $
+  $b/day_03.o $
+  $b/day_04.o $
+  $b/day_05.o $
+  $b/day_06.o $
+  $b/day_07.o $
+  $b/day_08.o $
+  $b/day_09.o $
+  $b/utils.a
 
-build $b/2: link $b/2_main.o $b/utils.a
-build $b/2_main.o: cxx 2/main.cc
+build $b/day_01.o: cxx 1/day_01.cc
+build $b/day_02.o: cxx 2/day_02.cc
+build $b/day_03.o: cxx 3/day_03.cc
+build $b/day_04.o: cxx 4/day_04.cc
+build $b/day_05.o: cxx 5/day_05.cc
+build $b/day_06.o: cxx 6/day_06.cc
+build $b/day_07.o: cxx 7/day_07.cc
+build $b/day_08.o: cxx 8/day_08.cc
+build $b/day_09.o: cxx 9/day_09.cc
 
-build $b/3: link $b/3_main.o $b/utils.a
-build $b/3_main.o: cxx 3/main.cc
+build $b/testrunner_main.o: cxx testrunner/src/testrunner_main.cc
 
-build $b/4: link $b/4_main.o $b/utils.a
-build $b/4_main.o: cxx 4/main.cc
-
-build $b/5: link $b/5_main.o $b/utils.a
-build $b/5_main.o: cxx 5/main.cc
-
-build $b/6: link $b/6_main.o $b/6_window.o $b/utils.a
+build $b/day_06_animated: link $b/6_day_06_animated.o $b/6_window.o $b/utils.a
   libs = -lsfml-graphics -lsfml-window -lsfml-system
-build $b/6_main.o: cxx 6/main.cc
+build $b/6_day_06_animated.o: cxx 6/day_06_animated.cc
 build $b/6_window.o: cxx 6/window.cc
-
-build $b/7: link $b/7_main.o $b/utils.a
-build $b/7_main.o: cxx 7/main.cc
-
-build $b/8: link $b/8_main.o $b/utils.a
-build $b/8_main.o: cxx 8/main.cc
-
-build $b/9: link $b/9_main.o $b/utils.a
-build $b/9_main.o: cxx 9/main.cc
 
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc

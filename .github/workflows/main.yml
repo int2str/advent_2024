@@ -24,4 +24,4 @@ jobs:
         run: ninja
 
       - name: Run
-        run: ./run.sh
+        run: ./build/advent2024 -v

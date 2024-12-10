@@ -3,13 +3,11 @@
 // https://adventofcode.com/2024/day/8
 //
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-
 #include <filesystem>
 #include <ranges>
 #include <unordered_map>
 
+#include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/curry.hh"
 #include "utils/nm_view.hh"
@@ -96,11 +94,14 @@ struct Map {
 
 }  // namespace Day8
 
-auto main() -> int {
-  const auto map = Day8::makeMap("8/input.txt");
+TEST(Day_08_Resonant_Collinearity_SAMPLE) {
+  const auto map = Day8::makeMap("8/sample.txt");
+  EXPECT_EQ(Day8::antiNodes(map), 14);
+  EXPECT_EQ(Day8::harmonicAntiNodes(map), 34);
+}
 
-  fmt::print("Day 8\n-----\n");
-  fmt::print("Part 1 | Anti-node count    : {}\n", Day8::antiNodes(map));
-  fmt::print("Part 2 | Harmonic anti-nodes: {}\n\n",
-             Day8::harmonicAntiNodes(map));
+TEST(Day_08_Resonant_Collinearity_FINAL) {
+  const auto map = Day8::makeMap("8/input.txt");
+  EXPECT_EQ(Day8::antiNodes(map), 336);
+  EXPECT_EQ(Day8::harmonicAntiNodes(map), 1131);
 }

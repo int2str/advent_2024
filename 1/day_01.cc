@@ -3,13 +3,12 @@
 // https://adventofcode.com/2024/day/1
 //
 
-#include <fmt/core.h>
-
 #include <algorithm>
 #include <numeric>
 #include <ranges>
 #include <unordered_map>
 
+#include "testrunner/testrunner.h"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
 
@@ -36,16 +35,16 @@ namespace Day1 {
   return {left, right};
 }
 
-[[nodiscard]] auto partOne(std::vector<int>& first,
-                           std::vector<int>& second) -> int {
+[[nodiscard]] auto totalDistance(std::vector<int>& first,
+                                 std::vector<int>& second) -> int {
   constexpr auto abs_distance = [](int a, int b) { return std::abs(a - b); };
 
   const auto range = std::views::zip_transform(abs_distance, first, second);
   return std::accumulate(std::begin(range), std::end(range), int{});
 }
 
-[[nodiscard]] auto partTwo(const std::vector<int>& first,
-                           const std::vector<int>& second) -> int {
+[[nodiscard]] auto similarityScore(const std::vector<int>& first,
+                                   const std::vector<int>& second) -> int {
   auto map = std::unordered_map<int, int>{};
   for (const auto& right : second) ++map[right];
 
@@ -59,12 +58,14 @@ namespace Day1 {
 
 }  // namespace Day1
 
-auto main() -> int {
-  auto [first, second] = Day1::readListsSorted("1/input.txt");
+TEST(Day_01_Historian_Hysteria_SAMPLE) {
+  auto [first, second] = Day1::readListsSorted("1/sample.txt");
+  EXPECT_EQ(Day1::totalDistance(first, second), 11);
+  EXPECT_EQ(Day1::similarityScore(first, second), 31);
+}
 
-  fmt::print("Day 1\n-----\n");
-  fmt::print("Part 1 | Distance sum       : {}\n",
-             Day1::partOne(first, second));
-  fmt::print("Part 2 | Weighted difference: {}\n\n",
-             Day1::partTwo(first, second));
+TEST(Day_01_Historian_Hysteria_FINAL) {
+  auto [first, second] = Day1::readListsSorted("1/input.txt");
+  EXPECT_EQ(Day1::totalDistance(first, second), 1834060);
+  EXPECT_EQ(Day1::similarityScore(first, second), 21607792);
 }

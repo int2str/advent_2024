@@ -10,7 +10,7 @@ namespace {
 
 constexpr auto WINDOW_TITLE = "Advent of Code";
 
-constexpr auto PIXEL_SCALE = 10U;
+constexpr auto PIXEL_SCALE = 8U;
 
 const auto COLOR_BACKGROUND = sf::Color{10, 20, 10};
 const auto COLOR_VISITED    = sf::Color{200, 200, 0};
@@ -116,9 +116,8 @@ void Window::draw() {
     drawBlocks(window_, visited_, state_->candidates);
     drawBlock(window_, candidate_, state_->candidate_at);
 
-    text_.setString(std::format("Candidates: {} Obstructions: {}",
-                                state_->candidates.size(),
-                                state_->obstruction_positions));
+    text_.setString(
+        std::format("Obstructions: {}", state_->obstruction_positions));
   }
 
   if (state_->mode == Mode::Done) {

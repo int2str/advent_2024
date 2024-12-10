@@ -3,17 +3,24 @@
 // https://adventofcode.com/2024/day/2
 //
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <ranges>
 
+#include "testrunner/testrunner.h"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
 
-namespace {
+namespace Day2 {
+
+[[nodiscard]] auto readReports(const std::filesystem::path& path) {
+  return Utils::readLines(path)  //
+         | std::views::transform([](const auto& line) {
+             return Utils::split<int>(line, " ");
+           })  //
+         | std::ranges::to<std::vector>();
+}
 
 [[nodiscard]] constexpr auto minmaxDifference(const std::vector<int>& record)
     -> std::ranges::minmax_result<int> {
@@ -29,10 +36,6 @@ namespace {
          and std::signbit(minmax.min) == std::signbit(minmax.max);
 }
 
-}  // namespace
-
-namespace Day2 {
-
 [[nodiscard]] auto safeReports(const auto& records) {
   const auto validated = records                                    //
                          | std::views::transform(minmaxDifference)  //
@@ -40,7 +43,7 @@ namespace Day2 {
   return std::ranges::count(validated, true);
 }
 
-[[nodiscard]] auto safeReportsMinusOne(const auto& records) {
+[[nodiscard]] auto safeReportsWithTolerance(const auto& records) {
   constexpr auto validate = [](auto record) -> bool {
     for (int64_t skip_idx = 0; skip_idx != static_cast<int64_t>(record.size());
          ++skip_idx) {
@@ -58,15 +61,14 @@ namespace Day2 {
 
 }  // namespace Day2
 
-auto main() -> int {
-  const auto records = Utils::readLines("2/input.txt")  //
-                       | std::views::transform([](const auto& line) {
-                           return Utils::split<int>(line, " ");
-                         })  //
-                       | std::ranges::to<std::vector>();
+TEST(Day_02_RedNosed_Reports_SAMPLE) {
+  const auto reports = Day2::readReports("2/sample.txt");
+  EXPECT_EQ(Day2::safeReports(reports), 2);
+  EXPECT_EQ(Day2::safeReportsWithTolerance(reports), 4);
+}
 
-  fmt::print("Day 2\n-----\n");
-  fmt::print("Part 1 | Safe reports  : {}\n", Day2::safeReports(records));
-  fmt::print("Part 2 | Safe minus one: {}\n\n",
-             Day2::safeReportsMinusOne(records));
+TEST(Day_02_RedNosed_Reports_FINAL) {
+  const auto reports = Day2::readReports("2/input.txt");
+  EXPECT_EQ(Day2::safeReports(reports), 524);
+  EXPECT_EQ(Day2::safeReportsWithTolerance(reports), 569);
 }

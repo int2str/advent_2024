@@ -3,14 +3,13 @@
 // https://adventofcode.com/2024/day/5
 //
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-
 #include <algorithm>
 #include <ranges>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
+#include "testrunner/testrunner.h"
 #include "utils/nm_view.hh"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
@@ -48,8 +47,10 @@ using Manuals = std::vector<Pages>;
 [[nodiscard]] auto isValid(const RuleMap& rules, const Pages& pages) -> bool {
   auto seen = std::unordered_set<int>{};
   for (const auto& page : pages) {
-    for (const auto& maybe_invalid : rules.at(page)) {
-      if (seen.contains(maybe_invalid)) return false;
+    if (rules.contains(page)) {
+      for (const auto& maybe_invalid : rules.at(page)) {
+        if (seen.contains(maybe_invalid)) return false;
+      }
     }
     seen.insert(page);
   }
@@ -68,15 +69,17 @@ using Manuals = std::vector<Pages>;
   return std::ranges::fold_left(midpoints, 0, std::plus{});
 }
 
-[[nodiscard]] auto reorderInvlidPages(const RuleMap& rules,
-                                      const Manuals& manuals) -> int {
+[[nodiscard]] auto reorderInvalidPages(const RuleMap& rules,
+                                       const Manuals& manuals) -> int {
   const auto is_invalid = [&](const auto& pages) constexpr {
     return !isValid(rules, pages);
   };
 
   const auto reorder = [&](auto pages) {
-    for (auto [before, after] : Utils::nm_view(pages))
-      if (rules.at(*after).contains(*before)) std::swap(*before, *after);
+    for (auto [before, after] : Utils::nm_view(pages)) {
+      if (rules.contains(*after) and rules.at(*after).contains(*before))
+        std::swap(*before, *after);
+    }
     return pages;
   };
 
@@ -89,13 +92,16 @@ using Manuals = std::vector<Pages>;
 
 }  // namespace Day5
 
-auto main() -> int {
+TEST(Day_05_Print_Queue_SAMPLE) {
+  const auto rules   = Day5::makeRuleMap("5/sample_rules.txt");
+  const auto manuals = Day5::makePages("5/sample_pages.txt");
+  EXPECT_EQ(Day5::validMiddlePageSum(rules, manuals), 143);
+  EXPECT_EQ(Day5::reorderInvalidPages(rules, manuals), 123);
+}
+
+TEST(Day_05_Print_Queue_FINAL) {
   const auto rules   = Day5::makeRuleMap("5/input_rules.txt");
   const auto manuals = Day5::makePages("5/input_pages.txt");
-
-  fmt::print("Day 5\n-----\n");
-  fmt::print("Part 1 | Middle page sum  : {}\n",
-             Day5::validMiddlePageSum(rules, manuals));
-  fmt::print("Part 2 | Correctly ordered: {}\n\n",
-             Day5::reorderInvlidPages(rules, manuals));
+  EXPECT_EQ(Day5::validMiddlePageSum(rules, manuals), 5374);
+  EXPECT_EQ(Day5::reorderInvalidPages(rules, manuals), 4260);
 }

@@ -3,13 +3,12 @@
 // https://adventofcode.com/2024/day/4
 //
 
-#include <fmt/core.h>
-
 #include <algorithm>
 #include <ranges>
 #include <unordered_map>
 #include <unordered_set>
 
+#include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/curry.hh"
 #include "utils/read_file.hh"
@@ -42,8 +41,8 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
          search(lookup, what.substr(1), from + direction, direction);
 }
 
-[[nodiscard]] constexpr auto count(const LookupTable& lookup,
-                                   std::string_view what) -> int64_t {
+[[nodiscard]] constexpr auto xmas(const LookupTable& lookup,
+                                  std::string_view what) -> int64_t {
   const auto search_in_direction = [&](Coordinate from, int x_direction,
                                        int y_direction) {
     return (x_direction != 0 || y_direction != 0) and
@@ -58,7 +57,7 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
   return std::ranges::count(complete, true);
 }
 
-[[nodiscard]] auto xmas(const LookupTable& lookup) -> int64_t {
+[[nodiscard]] auto x_mas(const LookupTable& lookup) -> int64_t {
   const auto check_diagonal = [&](Coordinate c1, Coordinate c2) {
     return (lookup.at('M').contains(c1) and lookup.at('S').contains(c2)) or
            (lookup.at('S').contains(c1) and lookup.at('M').contains(c2));
@@ -73,10 +72,14 @@ using LookupTable = std::unordered_map<char, CoordinateSet>;
 
 }  // namespace Day4
 
-auto main() -> int {
-  const auto lookup = Day4::makeLookupTable("4/input.txt");
+TEST(Day_04_Ceres_Search_SAMPLE) {
+  const auto lookup = Day4::makeLookupTable("4/sample.txt");
+  EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 18);
+  EXPECT_EQ(Day4::x_mas(lookup), 9);
+}
 
-  fmt::print("Day 4\n-----\n");
-  fmt::print("Part 1 | XMAS count : {}\n", Day4::count(lookup, "XMAS"));
-  fmt::print("Part 2 | X-MAS count: {}\n\n", Day4::xmas(lookup));
+TEST(Day_04_Ceres_Search_FINAL) {
+  const auto lookup = Day4::makeLookupTable("4/input.txt");
+  EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 2464);
+  EXPECT_EQ(Day4::x_mas(lookup), 1982);
 }

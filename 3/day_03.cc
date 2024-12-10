@@ -3,13 +3,12 @@
 // https://adventofcode.com/2024/day/3
 //
 
-#include <fmt/core.h>
-
 #include <algorithm>
 #include <cctype>
 #include <optional>
 #include <vector>
 
+#include "testrunner/testrunner.h"
 #include "utils/read_file.hh"
 
 namespace Day3 {
@@ -93,7 +92,7 @@ template <char WHAT>
 }
 
 [[nodiscard]] constexpr auto parseGibberishConditionally(
-    const std::vector<char>& from_file) -> int {
+    std::string_view from_file) -> int {
   // We could have used regular expressions to parse the string....
   // We could have tokenized it and then parsed it properly....
   // But no...
@@ -103,13 +102,15 @@ template <char WHAT>
 
 }  // namespace Day3
 
-auto main() -> int {
-  const auto file = Utils::readFile("3/input.txt");
-  if (file.empty()) return 1;
+TEST(Day_03_Mull_It_Over_SAMPLE) {
+  const auto file = Utils::readFile("3/sample.txt");
+  EXPECT_EQ(Day3::parseGibberish(std::string_view{file}), 161);
+  EXPECT_EQ(Day3::parseGibberishConditionally(std::string_view{file}), 48);
+}
 
-  fmt::print("Day 3\n-----\n");
-  fmt::print("Part 1 | Multiplication sum   : {}\n",
-             Day3::parseGibberish(std::string_view{file}));
-  fmt::print("Part 2 | Multipy conditionally: {}\n\n",
-             Day3::parseGibberishConditionally(file));
+TEST(Day_03_Mull_It_Over_FINAL) {
+  const auto file = Utils::readFile("3/input.txt");
+  EXPECT_EQ(Day3::parseGibberish(std::string_view{file}), 166905464);
+  EXPECT_EQ(Day3::parseGibberishConditionally(std::string_view{file}),
+            72948684);
 }
