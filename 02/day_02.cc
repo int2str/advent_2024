@@ -62,13 +62,13 @@ namespace Day2 {
 }  // namespace Day2
 
 TEST(Day_02_RedNosed_Reports_SAMPLE) {
-  const auto reports = Day2::readReports("2/sample.txt");
+  const auto reports = Day2::readReports("02/sample.txt");
   EXPECT_EQ(Day2::safeReports(reports), 2);
   EXPECT_EQ(Day2::safeReportsWithTolerance(reports), 4);
 }
 
 TEST(Day_02_RedNosed_Reports_FINAL) {
-  const auto reports = Day2::readReports("2/input.txt");
+  const auto reports = Day2::readReports("02/input.txt");
   EXPECT_EQ(Day2::safeReports(reports), 524);
   EXPECT_EQ(Day2::safeReportsWithTolerance(reports), 569);
 }

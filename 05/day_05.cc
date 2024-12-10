@@ -93,15 +93,15 @@ using Manuals = std::vector<Pages>;
 }  // namespace Day5
 
 TEST(Day_05_Print_Queue_SAMPLE) {
-  const auto rules   = Day5::makeRuleMap("5/sample_rules.txt");
-  const auto manuals = Day5::makePages("5/sample_pages.txt");
+  const auto rules   = Day5::makeRuleMap("05/sample_rules.txt");
+  const auto manuals = Day5::makePages("05/sample_pages.txt");
   EXPECT_EQ(Day5::validMiddlePageSum(rules, manuals), 143);
   EXPECT_EQ(Day5::reorderInvalidPages(rules, manuals), 123);
 }
 
 TEST(Day_05_Print_Queue_FINAL) {
-  const auto rules   = Day5::makeRuleMap("5/input_rules.txt");
-  const auto manuals = Day5::makePages("5/input_pages.txt");
+  const auto rules   = Day5::makeRuleMap("05/input_rules.txt");
+  const auto manuals = Day5::makePages("05/input_pages.txt");
   EXPECT_EQ(Day5::validMiddlePageSum(rules, manuals), 5374);
   EXPECT_EQ(Day5::reorderInvalidPages(rules, manuals), 4260);
 }

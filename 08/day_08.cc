@@ -83,13 +83,13 @@ struct Map {
 }  // namespace Day8
 
 TEST(Day_08_Resonant_Collinearity_SAMPLE) {
-  const auto map = Utils::readFileXY("8/sample.txt", Day8::Map{});
+  const auto map = Utils::readFileXY("08/sample.txt", Day8::Map{});
   EXPECT_EQ(Day8::antiNodes(map), 14);
   EXPECT_EQ(Day8::harmonicAntiNodes(map), 34);
 }
 
 TEST(Day_08_Resonant_Collinearity_FINAL) {
-  const auto map = Utils::readFileXY("8/input.txt", Day8::Map{});
+  const auto map = Utils::readFileXY("08/input.txt", Day8::Map{});
   EXPECT_EQ(Day8::antiNodes(map), 336);
   EXPECT_EQ(Day8::harmonicAntiNodes(map), 1131);
 }

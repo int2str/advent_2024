@@ -109,13 +109,13 @@ struct BlockMaker {
 }  // namespace Day9
 
 TEST(Day_09_Disk_Fragmenter_SAMPLE) {
-  const auto blocks = Day9::readBlocks("9/sample.txt");
+  const auto blocks = Day9::readBlocks("09/sample.txt");
   EXPECT_EQ(Day9::checksum(Day9::fragment(blocks)), 1928);
   EXPECT_EQ(Day9::checksum(Day9::defrag(blocks)), 2858);
 }
 
 TEST(Day_09_Disk_Fragmenter_FINAL) {
-  const auto blocks = Day9::readBlocks("9/input.txt");
+  const auto blocks = Day9::readBlocks("09/input.txt");
   EXPECT_EQ(Day9::checksum(Day9::fragment(blocks)), 6242766523059ULL);
   EXPECT_EQ(Day9::checksum(Day9::defrag(blocks)), 6272188244509ULL);
 }

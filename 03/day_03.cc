@@ -103,13 +103,13 @@ template <char WHAT>
 }  // namespace Day3
 
 TEST(Day_03_Mull_It_Over_SAMPLE) {
-  const auto file = Utils::readFile("3/sample.txt");
+  const auto file = Utils::readFile("03/sample.txt");
   EXPECT_EQ(Day3::parseGibberish(std::string_view{file}), 161);
   EXPECT_EQ(Day3::parseGibberishConditionally(std::string_view{file}), 48);
 }
 
 TEST(Day_03_Mull_It_Over_FINAL) {
-  const auto file = Utils::readFile("3/input.txt");
+  const auto file = Utils::readFile("03/input.txt");
   EXPECT_EQ(Day3::parseGibberish(std::string_view{file}), 166905464);
   EXPECT_EQ(Day3::parseGibberishConditionally(std::string_view{file}),
             72948684);

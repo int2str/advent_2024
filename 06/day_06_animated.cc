@@ -85,6 +85,6 @@ void animate(State& state) {
 
 auto main() -> int {
   auto state =
-      Day6::State{.map = Utils::readFileXY("6/input.txt", Day6::Map{})};
+      Day6::State{.map = Utils::readFileXY("06/input.txt", Day6::Map{})};
   Day6::animate(state);
 }

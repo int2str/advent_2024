@@ -81,13 +81,13 @@ template <typename... Ts>
 }  // namespace Day7
 
 TEST(Day_07_Bridge_Repair_SAMPLE) {
-  const auto equations = Day7::calibrationEquations("7/sample.txt");
+  const auto equations = Day7::calibrationEquations("07/sample.txt");
   EXPECT_EQ(Day7::calibrate(equations, Day7::fixPlusOrMultiplies), 3749);
   EXPECT_EQ(Day7::calibrate(equations, Day7::alsoFixConcatenate), 11387);
 }
 
 TEST(Day_07_Bridge_Repair_FINAL) {
-  const auto equations = Day7::calibrationEquations("7/input.txt");
+  const auto equations = Day7::calibrationEquations("07/input.txt");
   EXPECT_EQ(Day7::calibrate(equations, Day7::fixPlusOrMultiplies),
             303876485655ULL);
   EXPECT_EQ(Day7::calibrate(equations, Day7::alsoFixConcatenate),

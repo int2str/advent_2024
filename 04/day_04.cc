@@ -71,13 +71,13 @@ using LookupTable = std::unordered_map<char, Utils::CoordinateSet>;
 }  // namespace Day4
 
 TEST(Day_04_Ceres_Search_SAMPLE) {
-  const auto lookup = Day4::makeLookupTable("4/sample.txt");
+  const auto lookup = Day4::makeLookupTable("04/sample.txt");
   EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 18);
   EXPECT_EQ(Day4::x_mas(lookup), 9);
 }
 
 TEST(Day_04_Ceres_Search_FINAL) {
-  const auto lookup = Day4::makeLookupTable("4/input.txt");
+  const auto lookup = Day4::makeLookupTable("04/input.txt");
   EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 2464);
   EXPECT_EQ(Day4::x_mas(lookup), 1982);
 }

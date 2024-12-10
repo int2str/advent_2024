@@ -59,7 +59,7 @@ void spyOnTheGuard(State& state) {
 
 TEST(Day_06_Guard_Gallivant_SAMPLE) {
   auto state =
-      Day6::State{.map = Utils::readFileXY("6/sample.txt", Day6::Map{})};
+      Day6::State{.map = Utils::readFileXY("06/sample.txt", Day6::Map{})};
   Day6::spyOnTheGuard(state);
 
   EXPECT_EQ(state.candidates_attempted + 1, 41);
@@ -68,7 +68,7 @@ TEST(Day_06_Guard_Gallivant_SAMPLE) {
 
 TEST(Day_06_Guard_Gallivant_FINAL) {
   auto state =
-      Day6::State{.map = Utils::readFileXY("6/input.txt", Day6::Map{})};
+      Day6::State{.map = Utils::readFileXY("06/input.txt", Day6::Map{})};
   Day6::spyOnTheGuard(state);
 
   EXPECT_EQ(state.candidates_attempted + 1, 5318);

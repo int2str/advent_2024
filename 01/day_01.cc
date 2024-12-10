@@ -59,13 +59,13 @@ namespace Day1 {
 }  // namespace Day1
 
 TEST(Day_01_Historian_Hysteria_SAMPLE) {
-  auto [first, second] = Day1::readListsSorted("1/sample.txt");
+  auto [first, second] = Day1::readListsSorted("01/sample.txt");
   EXPECT_EQ(Day1::totalDistance(first, second), 11);
   EXPECT_EQ(Day1::similarityScore(first, second), 31);
 }
 
 TEST(Day_01_Historian_Hysteria_FINAL) {
-  auto [first, second] = Day1::readListsSorted("1/input.txt");
+  auto [first, second] = Day1::readListsSorted("01/input.txt");
   EXPECT_EQ(Day1::totalDistance(first, second), 1834060);
   EXPECT_EQ(Day1::similarityScore(first, second), 21607792);
 }
