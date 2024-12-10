@@ -49,6 +49,7 @@ build $b/advent2024: link $b/testrunner_main.o $
   $b/day_07.o $
   $b/day_08.o $
   $b/day_09.o $
+  $b/day_10.o $
   $b/utils.a
 
 build $b/day_01.o: cxx 1/day_01.cc
@@ -60,6 +61,7 @@ build $b/day_06.o: cxx 6/day_06.cc
 build $b/day_07.o: cxx 7/day_07.cc
 build $b/day_08.o: cxx 8/day_08.cc
 build $b/day_09.o: cxx 9/day_09.cc
+build $b/day_10.o: cxx 10/day_10.cc
 
 build $b/testrunner_main.o: cxx testrunner/src/testrunner_main.cc
 

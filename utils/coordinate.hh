@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cwchar>
 #include <limits>
+#include <unordered_map>
 
 namespace Utils {
 
@@ -137,23 +138,5 @@ class CoordinateSet {
 };
 
 }  // namespace Utils
-
-// --------------------------------------------------------------------------------
-
-#include <fmt/format.h>
-
-template <>
-struct fmt::formatter<Utils::Coordinate> {
-  template <typename ParseContext>
-  constexpr auto parse(ParseContext& ctx) {
-    return ctx.begin();
-  }
-
-  template <typename FormatContext>
-  auto format(const Utils::Coordinate& coordinate, FormatContext& ctx) const {
-    return fmt::format_to(ctx.out(), "{}/{}", coordinate.y + 1,
-                          coordinate.x + 1);
-  }
-};
 
 #endif  // COORDINATE_HH
