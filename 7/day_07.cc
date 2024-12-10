@@ -86,7 +86,7 @@ TEST(Day_07_Bridge_Repair_SAMPLE) {
   EXPECT_EQ(Day7::calibrate(equations, Day7::alsoFixConcatenate), 11387);
 }
 
-TEST(Day_07_Bridge_Repair_fINAL) {
+TEST(Day_07_Bridge_Repair_FINAL) {
   const auto equations = Day7::calibrationEquations("7/input.txt");
   EXPECT_EQ(Day7::calibrate(equations, Day7::fixPlusOrMultiplies),
             303876485655ULL);
