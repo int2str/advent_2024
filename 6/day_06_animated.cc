@@ -65,7 +65,6 @@ void animate(State& state) {
             }
           }
         } else {
-          fmt::print(" # {} #\n", state.candidate_at);
           state.mode = Mode::Done;
         }
 
