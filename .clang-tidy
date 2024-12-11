@@ -13,7 +13,8 @@ Checks: >
   -misc-include-cleaner,
   -misc-no-recursion,
   -readability-redundant-member-init,
-  -readability-identifier-length
+  -readability-identifier-length,
+  -readability-magic-numbers
 
 WarningsAsErrors: false
 FormatStyle: file
