@@ -1,6 +1,7 @@
 #ifndef COORDINATE_HH
 #define COORDINATE_HH
 
+#include <array>
 #include <compare>  // IWYU pragma: keep
 
 namespace Utils {
@@ -10,6 +11,8 @@ struct Coordinate {
   int y{};
 
   [[nodiscard]] constexpr auto operator<=>(const Coordinate&) const = default;
+
+  // Math
 
   constexpr auto operator+=(const Coordinate& other) -> Coordinate& {
     x += other.x;
@@ -23,7 +26,37 @@ struct Coordinate {
     return *this;
   }
 
-  void rotateCW() { *this = Coordinate{-y, x}; }
+  // Transform
+
+  void rotateClockwise() { *this = Coordinate{-y, x}; }
+
+  void flip() { *this = Coordinate{-x, -y}; }
+
+  // Info
+
+  [[nodiscard]] constexpr auto neighbours() const -> std::array<Coordinate, 8> {
+    return {Coordinate{x - 1, y - 1},
+            {x, y - 1},
+            {x + 1, y - 1},
+            {x - 1, y},
+            {x + 1, y},
+            {x - 1, y + 1},
+            {x, y + 1},
+            {x + 1, y + 1}};
+  }
+
+  [[nodiscard]] constexpr auto orthogonalNeighbours() const
+      -> std::array<Coordinate, 4> {
+    return {Coordinate{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
+  }
+
+  [[nodiscard]] constexpr auto diagonalNeighbours() const
+      -> std::array<Coordinate, 4> {
+    return {Coordinate{x - 1, y - 1},
+            {x + 1, y + 1},
+            {x + 1, y - 1},
+            {x - 1, y + 1}};
+  }
 };
 
 }  // namespace Utils

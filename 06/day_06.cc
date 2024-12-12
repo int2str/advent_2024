@@ -20,7 +20,7 @@ void moveGuard(State& state) {
   state.visited.insert(state.guard_at);
   auto new_position = state.guard_at + state.guard_direction;
   while (state.map.blocked.contains(new_position)) {
-    state.guard_direction.rotateCW();
+    state.guard_direction.rotateClockwise();
     new_position = state.guard_at + state.guard_direction;
   }
   state.guard_at = new_position;
