@@ -3,94 +3,97 @@
 // https://adventofcode.com/2024/day/8
 //
 
-#include <filesystem>
-#include <unordered_map>
+#include <array>
+#include <fstream>
+#include <ranges>
+#include <vector>
 
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/coordinate_set.hh"
-#include "utils/nm_view.hh"
-#include "utils/read_file.hh"
+#include "utils/curry.hh"
+#include "utils/grid.hh"
 
 namespace Day8 {
 
-using LookupTable = std::unordered_map<char, Utils::CoordinateSet>;
+using AntennaGrid = Utils::Grid<char>;
 
-struct Map {
-  LookupTable frequencies;
-  Utils::CoordinateSet antennae;
-  Utils::Coordinate size;
-
-  [[nodiscard]] constexpr auto inBounds(
-      const Utils::Coordinate& coordinate) const -> bool {
-    return coordinate.x >= 0 and coordinate.y >= 0 and coordinate.x < size.x and
-           coordinate.y < size.y;
+[[nodiscard]] auto antiNodes(const AntennaGrid& grid) -> size_t {
+  const auto is_antenna = [&](auto coordinate) {
+    return grid[coordinate] != '.';
   };
 
-  // NOLINTNEXTLINE
-  void operator()(size_t x, size_t y, char chr) {
-    const auto coordinate =
-        Utils::Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)};
-    size.x = std::max(size.x, coordinate.x + 1);
-    size.y = std::max(size.y, coordinate.y + 1);
-    if (chr != '.') {
-      frequencies[chr].insert(coordinate);
-      antennae.insert(coordinate);
-    }
-  }
-};
-
-[[nodiscard]] auto antiNodes(const Map& map) -> size_t {
-  auto anti_nodes = Utils::CoordinateSet{};
-
-  const auto add_node = [&](const Utils::Coordinate& coordinate) {
-    if (map.inBounds(coordinate)) anti_nodes.insert(coordinate);
+  const auto is_same_frequency = [&](auto first, auto second) {
+    return first != second and grid[first] == grid[second];
   };
 
-  for (const auto& [_, antennae] : map.frequencies) {
-    for (auto [a, b] : Utils::nm_const_view(antennae)) {
-      add_node(*a + (*a - *b));
-      add_node(*b + (*b - *a));
-    }
-  }
+  const auto antinodes_for = [&](auto first, auto second) {
+    const auto distance = second - first;
+    return std::array{first - distance, second + distance};
+  };
 
-  return anti_nodes.count();
+  const auto in_bounds = [&](auto coordinate) {
+    return grid.inBounds(coordinate);
+  };
+
+  auto antennae = grid.coordinates() | std::views::filter(is_antenna);
+
+  const auto antinodes =
+      std::views::cartesian_product(antennae, antennae)        //
+      | std::views::filter(Utils::uncurry(is_same_frequency))  //
+      | std::views::transform(Utils::uncurry(antinodes_for))   //
+      | std::views::join                                       //
+      | std::views::filter(in_bounds)                          //
+      | std::ranges::to<Utils::CoordinateSet>();
+  return antinodes.count();
 }
 
-[[nodiscard]] auto harmonicAntiNodes(const Map& map) -> size_t {
-  auto anti_nodes = map.antennae;
-
-  const auto add_node = [&](const Utils::Coordinate& coordinate) {
-    if (map.inBounds(coordinate)) {
-      anti_nodes.insert(coordinate);
-      return true;
-    }
-    return false;
+[[nodiscard]] auto harmonicAntiNodes(const AntennaGrid& grid) -> size_t {
+  const auto is_antenna = [&](auto coordinate) {
+    return grid[coordinate] != '.';
   };
 
-  for (const auto& [_, antennae] : map.frequencies) {
-    for (auto [a, b] : Utils::nm_const_view(antennae)) {
-      const auto diff = *a - *b;
-      auto nodes_plus = *a + diff;
-      while (add_node(nodes_plus)) nodes_plus += diff;
-      auto nodes_minus = *b - diff;
-      while (add_node(nodes_minus)) nodes_minus -= diff;
-    }
-  }
+  const auto is_same_frequency = [&](auto first, auto second) {
+    return first != second and grid[first] == grid[second];
+  };
 
-  return anti_nodes.count();
+  const auto antinodes_for = [&](auto first, auto second) {
+    auto nodes          = std::vector<Utils::Coordinate>{};
+    const auto distance = second - first;
+    while (grid.inBounds(first)) {
+      nodes.push_back(first);
+      first += distance;
+    }
+    while (grid.inBounds(second)) {
+      nodes.push_back(second);
+      second += distance;
+    }
+    return nodes;
+  };
+
+  auto antennae = grid.coordinates() | std::views::filter(is_antenna);
+
+  const auto antinodes =
+      std::views::cartesian_product(antennae, antennae)        //
+      | std::views::filter(Utils::uncurry(is_same_frequency))  //
+      | std::views::transform(Utils::uncurry(antinodes_for))   //
+      | std::views::join                                       //
+      | std::ranges::to<Utils::CoordinateSet>();
+  return antinodes.count();
 }
 
 }  // namespace Day8
 
 TEST(Day_08_Resonant_Collinearity_SAMPLE) {
-  const auto map = Utils::readFileXY("08/sample.txt", Day8::Map{});
-  EXPECT_EQ(Day8::antiNodes(map), 14);
-  EXPECT_EQ(Day8::harmonicAntiNodes(map), 34);
+  auto file       = std::ifstream("08/sample.txt");
+  const auto grid = Day8::AntennaGrid::from(file);
+  EXPECT_EQ(Day8::antiNodes(grid), 14);
+  EXPECT_EQ(Day8::harmonicAntiNodes(grid), 34);
 }
 
 TEST(Day_08_Resonant_Collinearity_FINAL) {
-  const auto map = Utils::readFileXY("08/input.txt", Day8::Map{});
-  EXPECT_EQ(Day8::antiNodes(map), 336);
-  EXPECT_EQ(Day8::harmonicAntiNodes(map), 1131);
+  auto file       = std::ifstream("08/input.txt");
+  const auto grid = Day8::AntennaGrid::from(file);
+  EXPECT_EQ(Day8::antiNodes(grid), 336);
+  EXPECT_EQ(Day8::harmonicAntiNodes(grid), 1131);
 }
