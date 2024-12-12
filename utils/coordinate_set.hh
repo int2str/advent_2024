@@ -4,6 +4,7 @@
 #include <bitset>
 #include <cstdint>
 #include <limits>
+#include <ranges>
 
 #include "coordinate.hh"
 
@@ -66,6 +67,13 @@ class CoordinateSet {
   using const_iterator = Iterator;
   using iterator       = Iterator;
   using value_type     = Coordinate;
+
+  CoordinateSet() = default;
+
+  template <typename RANGE>
+  CoordinateSet(std::from_range_t /*unused*/, RANGE&& range) {
+    for (auto coordinate : range) insert(coordinate);
+  }
 
   constexpr void insert(const Coordinate& coordinate) {
     bits_.set(idxFor(coordinate));
