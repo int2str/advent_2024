@@ -3,82 +3,77 @@
 // https://adventofcode.com/2024/day/4
 //
 
-#include <algorithm>
+#include <filesystem>
+#include <fstream>
 #include <ranges>
-#include <unordered_map>
-#include <unordered_set>
 
 #include "testrunner/testrunner.h"
-#include "utils/coordinate.hh"
-#include "utils/coordinate_set.hh"
+#include "utils/coordinate_directions.hh"
 #include "utils/curry.hh"
-#include "utils/read_file.hh"
+#include "utils/grid.hh"
 
 namespace Day4 {
 
-using LookupTable = std::unordered_map<char, Utils::CoordinateSet>;
+using XmasGrid = Utils::Grid<char, Utils::OutOfBoundsPolicy::Default<char{}>>;
 
-[[nodiscard]] auto makeLookupTable(const std::filesystem::path& path)
-    -> LookupTable {
-  auto lookup = LookupTable{};
-  Utils::readFileXY(path, [&](auto x, auto y, auto chr) {
-    lookup[chr].insert(
-        Utils::Coordinate{.x = static_cast<int>(x), .y = static_cast<int>(y)});
-  });
-  return lookup;
+[[nodiscard]] auto makeGrid(const std::filesystem::path& path) -> XmasGrid {
+  auto file = std::ifstream(path);
+  return XmasGrid::from(file);
 }
 
-[[nodiscard]] constexpr auto search(const LookupTable& lookup,
-                                    std::string_view what,
-                                    Utils::Coordinate from,
-                                    Utils::Coordinate direction) -> bool {
-  if (what.empty()) return true;
-  return lookup.at(what.front()).contains(from + direction) and
-         search(lookup, what.substr(1), from + direction, direction);
-}
-
-[[nodiscard]] constexpr auto xmas(const LookupTable& lookup,
-                                  std::string_view what) -> int64_t {
-  const auto search_in_direction = [&](Utils::Coordinate from, int x_direction,
-                                       int y_direction) {
-    return (x_direction != 0 || y_direction != 0) and
-           search(lookup, what.substr(1), from, {x_direction, y_direction});
+[[nodiscard]] constexpr auto find(const XmasGrid& grid,
+                                  std::string_view word) -> int64_t {
+  const auto find_rest = [&](this auto self, auto from, auto direction,
+                             auto rest) -> bool {
+    if (rest.empty()) return true;
+    if (grid[from + direction] != rest.front()) return false;
+    return self(from + direction, direction, rest.substr(1));
   };
 
-  const auto complete =
-      std::views::cartesian_product(lookup.at(*what.begin()),
-                                    std::views::iota(-1, 2),
-                                    std::views::iota(-1, 2)) |
-      std::views::transform(Utils::uncurry(search_in_direction));
-  return std::ranges::count(complete, true);
-}
-
-[[nodiscard]] auto x_mas(const LookupTable& lookup) -> int64_t {
-  const auto check_diagonal = [&](Utils::Coordinate c1, Utils::Coordinate c2) {
-    return (lookup.at('M').contains(c1) and lookup.at('S').contains(c2)) or
-           (lookup.at('S').contains(c1) and lookup.at('M').contains(c2));
+  const auto find_first = [&](auto from, auto direction) -> bool {
+    return find_rest(from, direction, std::string_view{"MAS"});
   };
 
-  const auto& As = lookup.at('A');
-  return std::ranges::count_if(
-      std::begin(As), std::end(As), [&](Utils::Coordinate A) {
-        return check_diagonal(A + Utils::Coordinate{-1, -1},
-                              A + Utils::Coordinate{1, 1}) and
-               check_diagonal(A + Utils::Coordinate{1, -1},
-                              A + Utils::Coordinate{-1, 1});
-      });
+  const auto is_first = [&](auto coordinate) {
+    return grid[coordinate] == word.front();
+  };
+
+  auto found = std::views::cartesian_product(
+                   grid.coordinates() | std::views::filter(is_first),
+                   Utils::Directions::clockwise())  //
+               | std::views::filter(Utils::uncurry(find_first));
+  return std::distance(std::begin(found), std::end(found));
+}
+
+[[nodiscard]] auto x_mas(const XmasGrid& grid) -> int64_t {
+  const auto is_A = [&](auto coordinate) { return grid[coordinate] == 'A'; };
+
+  const auto is_MS = [&](auto from, auto direction) {
+    return (grid[from + direction] == 'M' and grid[from - direction] == 'S') or
+           (grid[from + direction] == 'S' and grid[from - direction] == 'M');
+  };
+
+  const auto is_MAS = [&](auto from) {
+    return is_MS(from, Utils::Directions::upLeft()) and
+           is_MS(from, Utils::Directions::upRight());
+  };
+
+  auto found = grid.coordinates()          //
+               | std::views::filter(is_A)  //
+               | std::views::filter(is_MAS);
+  return std::distance(std::begin(found), std::end(found));
 }
 
 }  // namespace Day4
 
 TEST(Day_04_Ceres_Search_SAMPLE) {
-  const auto lookup = Day4::makeLookupTable("04/sample.txt");
-  EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 18);
-  EXPECT_EQ(Day4::x_mas(lookup), 9);
+  const auto grid = Day4::makeGrid("04/sample.txt");
+  EXPECT_EQ(Day4::find(grid, "XMAS"), 18);
+  EXPECT_EQ(Day4::x_mas(grid), 9);
 }
 
 TEST(Day_04_Ceres_Search_FINAL) {
-  const auto lookup = Day4::makeLookupTable("04/input.txt");
-  EXPECT_EQ(Day4::xmas(lookup, "XMAS"), 2464);
-  EXPECT_EQ(Day4::x_mas(lookup), 1982);
+  const auto grid = Day4::makeGrid("04/input.txt");
+  EXPECT_EQ(Day4::find(grid, "XMAS"), 2464);
+  EXPECT_EQ(Day4::x_mas(grid), 1982);
 }
