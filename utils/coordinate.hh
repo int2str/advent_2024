@@ -34,7 +34,7 @@ struct Coordinate {
 
   // Info
 
-  [[nodiscard]] constexpr auto neighbours() const -> std::array<Coordinate, 8> {
+  [[nodiscard]] constexpr auto neighbors() const -> std::array<Coordinate, 8> {
     return {Coordinate{x - 1, y - 1},
             {x, y - 1},
             {x + 1, y - 1},
@@ -45,12 +45,12 @@ struct Coordinate {
             {x + 1, y + 1}};
   }
 
-  [[nodiscard]] constexpr auto orthogonalNeighbours() const
+  [[nodiscard]] constexpr auto orthogonalNeighbors() const
       -> std::array<Coordinate, 4> {
     return {Coordinate{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
   }
 
-  [[nodiscard]] constexpr auto diagonalNeighbours() const
+  [[nodiscard]] constexpr auto diagonalNeighbors() const
       -> std::array<Coordinate, 4> {
     return {Coordinate{x - 1, y - 1},
             {x + 1, y + 1},

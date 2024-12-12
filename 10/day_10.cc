@@ -6,104 +6,80 @@
 #include <fmt/core.h>
 
 #include <algorithm>  // IWYU pragma: keep
+#include <filesystem>
+#include <fstream>
 
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
-#include "utils/coordinate_map.hh"
 #include "utils/coordinate_set.hh"
-#include "utils/read_file.hh"
-#include "utils/xy_array.hh"
+#include "utils/grid.hh"
 
 namespace Day10 {
 
-class HeightMap {
- public:
-  static constexpr auto MAX_WIDTH  = 256ULL;
-  static constexpr auto MAX_HEIGHT = 256ULL;
+using ElevationGrid =
+    Utils::Grid<char, Utils::OutOfBoundsPolicy::Default<char{}>>;
 
-  static constexpr auto PEAK      = uint8_t{9};
-  static constexpr auto TRAILHEAD = uint8_t{0};
-
-  Utils::xy_array<uint8_t, MAX_WIDTH, MAX_HEIGHT> elevation{};
-  Utils::CoordinateMap<Utils::CoordinateMap<size_t>> paths_to_peaks{};
-
-  std::size_t width{};
-  std::size_t height{};
-
-  Utils::CoordinateSet trailheads{};
-
-  [[nodiscard]] constexpr auto inBounds(
-      const Utils::Coordinate& coordinate) const -> bool {
-    return coordinate.x >= 0 and coordinate.x < static_cast<int>(width) and
-           coordinate.y >= 0 and coordinate.y < static_cast<int>(height);
-  }
-
-  [[nodiscard]] constexpr auto elevationAt(
-      const Utils::Coordinate& coordinate) const -> uint8_t {
-    if (!inBounds(coordinate)) return static_cast<uint8_t>(-1);
-    return elevation[static_cast<size_t>(coordinate.x),
-                     static_cast<size_t>(coordinate.y)];
-  }
-
-  // NOLINTNEXTLINE
-  void operator()(std::size_t x, std::size_t y, char chr) {
-    width  = std::max(width, x + 1);
-    height = std::max(height, y + 1);
-
-    const auto current_elevation = static_cast<uint8_t>(chr - '0');
-    elevation[x, y]              = current_elevation;
-    if (current_elevation == TRAILHEAD) {
-      trailheads.insert(Utils::Coordinate{.x = static_cast<int>(x),
-                                          .y = static_cast<int>(y)});
-    }
-  }
-};
-
-constexpr auto offsets = std::array<Utils::Coordinate, 4>{
-    Utils::Coordinate{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-void markAdjacent(HeightMap& map, Utils::Coordinate position,
-                  Utils::Coordinate head) {
-  if (map.elevation[position] == HeightMap::PEAK) {
-    ++map.paths_to_peaks[head][position];
-    return;
-  }
-
-  for (const auto& offset : offsets) {
-    const auto adjacent = position + offset;
-    if (map.elevationAt(adjacent) == (map.elevationAt(position) + 1))
-      markAdjacent(map, adjacent, head);
-  }
+[[nodiscard]] auto makeGrid(const std::filesystem::path& path)
+    -> ElevationGrid {
+  auto file = std::ifstream(path);
+  return ElevationGrid::from(file);
 }
 
-[[nodiscard]] auto makeMap(const std::filesystem::path& path) -> HeightMap {
-  auto map = Utils::readFileXY(path, HeightMap{});
-  for (const auto head : map.trailheads) markAdjacent(map, head, head);
-  return map;
+[[nodiscard]] constexpr auto reachablePeaks(const ElevationGrid& grid)
+    -> size_t {
+  const auto is_head = [&](auto coordinate) { return grid[coordinate] == '0'; };
+  const auto is_peak = [&](auto coordinate) { return grid[coordinate] == '9'; };
+
+  const auto peaks_reached = [&](this auto self, auto from) {
+    if (is_peak(from)) return std::vector<Utils::Coordinate>{from};
+    return from.orthogonalNeighbors()  //
+           | std::views::filter(
+                 [&](auto to) { return (grid[to] - grid[from]) == 1; })  //
+           | std::views::transform(self)                                 //
+           | std::views::join                                            //
+           | std::ranges::to<std::vector>();
+  };
+
+  const auto unique_peaks = [&](auto peaks) {
+    return (peaks | std::ranges::to<Utils::CoordinateSet>()).count();
+  };
+
+  auto peaks = grid.coordinates()                      //
+               | std::views::filter(is_head)           //
+               | std::views::transform(peaks_reached)  //
+               | std::views::transform(unique_peaks);
+  return std::ranges::fold_left(peaks, 0U, std::plus{});
 }
 
-[[nodiscard]] auto trailRatings(const HeightMap& map)
-    -> std::pair<size_t, size_t> {
-  auto result = std::pair<size_t, size_t>{};
-  for (const auto& [head, peaks] : map.paths_to_peaks) {
-    result.first += peaks.size();
-    for (const auto& [peak, paths] : peaks) result.second += paths;
-  }
-  return result;
+[[nodiscard]] constexpr auto trailRatings(const ElevationGrid& grid) -> size_t {
+  const auto is_head = [&](auto coordinate) { return grid[coordinate] == '0'; };
+  const auto is_peak = [&](auto coordinate) { return grid[coordinate] == '9'; };
+
+  auto count_paths_to_top = [&](this auto self, auto from) {
+    if (is_peak(from)) return 1;
+    auto next = from.orthogonalNeighbors()  //
+                | std::views::filter(
+                      [&](auto to) { return (grid[to] - grid[from]) == 1; })  //
+                | std::views::transform(self);
+    return std::ranges::fold_left(next, 0, std::plus{});
+  };
+
+  auto paths_from_heads = grid.coordinates()             //
+                          | std::views::filter(is_head)  //
+                          | std::views::transform(count_paths_to_top);
+  return std::ranges::fold_left(paths_from_heads, 0U, std::plus{});
 }
 
 }  // namespace Day10
 
 TEST(Day_10_Hoof_It_SAMPLE) {
-  const auto [reachable_peaks, paths_to_peaks] =
-      Day10::trailRatings(Day10::makeMap("10/sample.txt"));
-  EXPECT_EQ(reachable_peaks, 36);
-  EXPECT_EQ(paths_to_peaks, 81);
+  const auto grid = Day10::makeGrid("10/sample.txt");
+  EXPECT_EQ(Day10::reachablePeaks(grid), 36);
+  EXPECT_EQ(Day10::trailRatings(grid), 81);
 }
 
 TEST(Day_10_Hoof_It_FINAL) {
-  const auto [reachable_peaks, paths_to_peaks] =
-      Day10::trailRatings(Day10::makeMap("10/input.txt"));
-  EXPECT_EQ(reachable_peaks, 688);
-  EXPECT_EQ(paths_to_peaks, 1459);
+  const auto grid = Day10::makeGrid("10/input.txt");
+  EXPECT_EQ(Day10::reachablePeaks(grid), 688);
+  EXPECT_EQ(Day10::trailRatings(grid), 1459);
 }
