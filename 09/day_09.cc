@@ -36,9 +36,8 @@ struct BlockMaker {
 
 [[nodiscard]] auto readBlocks(const std::filesystem::path& path)
     -> std::vector<Block> {
-  return Utils::readFile(path)                                       //
-         | std::views::filter([](auto chr) { return chr != '\n'; })  //
-         | std::views::transform(Day9::BlockMaker{})                 //
+  return Utils::readLines(path).front()               //
+         | std::views::transform(Day9::BlockMaker{})  //
          | std::ranges::to<std::vector>();
 }
 
