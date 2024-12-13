@@ -5,8 +5,8 @@
 
 #include "coordinate.hh"
 
-template <>
-struct fmt::formatter<Utils::Coordinate> {
+template <typename INTEGER_TYPE>
+struct fmt::formatter<Utils::CoordinateBase<INTEGER_TYPE>> {
   enum class View : uint8_t { Raw_XY, Editor_YX };
 
   template <typename ParseContext>
@@ -34,7 +34,8 @@ struct fmt::formatter<Utils::Coordinate> {
   }
 
   template <typename FormatContext>
-  auto format(const Utils::Coordinate& coordinate, FormatContext& ctx) const {
+  auto format(const Utils::CoordinateBase<INTEGER_TYPE>& coordinate,
+              FormatContext& ctx) const {
     switch (view_) {
       case View::Editor_YX:
         return fmt::format_to(ctx.out(), "{}:{}", coordinate.y + base_,

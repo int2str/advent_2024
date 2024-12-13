@@ -3,24 +3,28 @@
 
 #include <array>
 #include <compare>  // IWYU pragma: keep
+#include <type_traits>
 
 namespace Utils {
 
-struct Coordinate {
-  int x{};
-  int y{};
+template <typename INTEGER_TYPE>
+  requires std::is_integral_v<INTEGER_TYPE>
+struct CoordinateBase {
+  INTEGER_TYPE x{};
+  INTEGER_TYPE y{};
 
-  [[nodiscard]] constexpr auto operator<=>(const Coordinate&) const = default;
+  [[nodiscard]] constexpr auto operator<=>(const CoordinateBase&) const =
+      default;
 
   // Math
 
-  constexpr auto operator+=(const Coordinate& other) -> Coordinate& {
+  constexpr auto operator+=(const CoordinateBase& other) -> CoordinateBase& {
     x += other.x;
     y += other.y;
     return *this;
   }
 
-  constexpr auto operator-=(const Coordinate& other) -> Coordinate& {
+  constexpr auto operator-=(const CoordinateBase& other) -> CoordinateBase& {
     x -= other.x;
     y -= other.y;
     return *this;
@@ -28,16 +32,17 @@ struct Coordinate {
 
   // Transform
 
-  constexpr void rotateClockwise() { *this = Coordinate{-y, x}; }
+  constexpr void rotateClockwise() { *this = CoordinateBase{-y, x}; }
 
-  constexpr void rotateCounterClockwise() { *this = Coordinate{y, -x}; }
+  constexpr void rotateCounterClockwise() { *this = CoordinateBase{y, -x}; }
 
-  constexpr void flip() { *this = Coordinate{-x, -y}; }
+  constexpr void flip() { *this = CoordinateBase{-x, -y}; }
 
   // Info
 
-  [[nodiscard]] constexpr auto neighbors() const -> std::array<Coordinate, 8> {
-    return {Coordinate{x - 1, y - 1},
+  [[nodiscard]] constexpr auto neighbors() const
+      -> std::array<CoordinateBase, 8> {
+    return {CoordinateBase{x - 1, y - 1},
             {x, y - 1},
             {x + 1, y - 1},
             {x - 1, y},
@@ -48,48 +53,101 @@ struct Coordinate {
   }
 
   [[nodiscard]] constexpr auto orthogonalNeighbors() const
-      -> std::array<Coordinate, 4> {
-    return {Coordinate{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
+      -> std::array<CoordinateBase, 4> {
+    return {CoordinateBase{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
   }
 
   [[nodiscard]] constexpr auto diagonalNeighbors() const
-      -> std::array<Coordinate, 4> {
-    return {Coordinate{x - 1, y - 1},
+      -> std::array<CoordinateBase, 4> {
+    return {CoordinateBase{x - 1, y - 1},
             {x + 1, y + 1},
             {x + 1, y - 1},
             {x - 1, y + 1}};
   }
 };
 
-[[nodiscard]] constexpr auto rotatedClockwise(Coordinate coordinate)
-    -> Coordinate {
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto rotatedClockwise(
+    CoordinateBase<INTEGER_TYPE> coordinate) -> CoordinateBase<INTEGER_TYPE> {
   coordinate.rotateClockwise();
   return coordinate;
 }
 
-[[nodiscard]] constexpr auto rotatedCounterClockwise(Coordinate coordinate)
-    -> Coordinate {
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto rotatedCounterClockwise(
+    CoordinateBase<INTEGER_TYPE> coordinate) -> CoordinateBase<INTEGER_TYPE> {
   coordinate.rotateCounterClockwise();
   return coordinate;
 }
 
-[[nodiscard]] constexpr auto flipped(Coordinate coordinate) -> Coordinate {
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto flipped(CoordinateBase<INTEGER_TYPE> coordinate)
+    -> CoordinateBase<INTEGER_TYPE> {
   coordinate.flip();
   return coordinate;
 }
 
+using Coordinate = CoordinateBase<int>;
+
 }  // namespace Utils
 
-[[nodiscard]] constexpr auto operator+(const Utils::Coordinate& lhs,
-                                       const Utils::Coordinate& rhs)
-    -> Utils::Coordinate {
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator+(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    const Utils::CoordinateBase<INTEGER_TYPE>& rhs)
+    -> Utils::CoordinateBase<INTEGER_TYPE> {
   return {.x = lhs.x + rhs.x, .y = lhs.y + rhs.y};
 }
 
-[[nodiscard]] constexpr auto operator-(const Utils::Coordinate& lhs,
-                                       const Utils::Coordinate& rhs)
-    -> Utils::Coordinate {
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator-(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    const Utils::CoordinateBase<INTEGER_TYPE>& rhs)
+    -> Utils::CoordinateBase<INTEGER_TYPE> {
   return {.x = lhs.x - rhs.x, .y = lhs.y - rhs.y};
 }
 
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator*(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    const Utils::CoordinateBase<INTEGER_TYPE>& rhs)
+    -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x * rhs.x, .y = lhs.y * rhs.y};
+}
+
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator/(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    const Utils::CoordinateBase<INTEGER_TYPE>& rhs)
+    -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x / rhs.x, .y = lhs.y / rhs.y};
+}
+
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator+(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    INTEGER_TYPE rhs) -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x + rhs, .y = lhs.y + rhs};
+}
+
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator-(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    INTEGER_TYPE rhs) -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x - rhs, .y = lhs.y - rhs};
+}
+
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator*(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    INTEGER_TYPE rhs) -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x * rhs, .y = lhs.y * rhs};
+}
+
+template <typename INTEGER_TYPE>
+[[nodiscard]] constexpr auto operator/(
+    const Utils::CoordinateBase<INTEGER_TYPE>& lhs,
+    INTEGER_TYPE rhs) -> Utils::CoordinateBase<INTEGER_TYPE> {
+  return {.x = lhs.x / rhs, .y = lhs.y / rhs};
+}
 #endif  // COORDINATE_HH
