@@ -70,6 +70,8 @@ class CoordinateSet {
 
   CoordinateSet() = default;
 
+  explicit CoordinateSet(Coordinate coordinate) { insert(coordinate); }
+
   template <typename RANGE>
   CoordinateSet(std::from_range_t /*unused*/, RANGE&& range) {
     for (auto coordinate : range) insert(coordinate);
@@ -91,6 +93,11 @@ class CoordinateSet {
     return idx < bits_.size() and bits_.test(idx);
   }
 
+  [[nodiscard]] constexpr auto operator[](const Coordinate& coordinate) const
+      -> bool {
+    return contains(coordinate);
+  }
+
   [[nodiscard]] constexpr auto size() const -> size_t { return bits_.size(); }
 
   [[nodiscard]] constexpr auto count() const -> size_t { return bits_.count(); }
@@ -108,3 +115,5 @@ class CoordinateSet {
 }  // namespace Utils
 
 #endif  // COORDINATE_SET_HH
+
+
