@@ -13,6 +13,7 @@
 #include "utils/coordinate.hh"
 #include "utils/coordinate_set.hh"
 #include "utils/grid.hh"
+#include "utils/sum.hh"
 
 namespace Day10 {
 
@@ -44,11 +45,10 @@ using ElevationGrid =
     return (peaks | std::ranges::to<Utils::CoordinateSet>()).count();
   };
 
-  auto peaks = grid.coordinates()                      //
-               | std::views::filter(is_head)           //
-               | std::views::transform(peaks_reached)  //
-               | std::views::transform(unique_peaks);
-  return std::ranges::fold_left(peaks, 0U, std::plus{});
+  return Utils::sum(grid.coordinates()                      //
+                    | std::views::filter(is_head)           //
+                    | std::views::transform(peaks_reached)  //
+                    | std::views::transform(unique_peaks));
 }
 
 [[nodiscard]] constexpr auto trailRatings(const ElevationGrid& grid) -> size_t {
@@ -56,18 +56,17 @@ using ElevationGrid =
   const auto is_peak = [&](auto coordinate) { return grid[coordinate] == '9'; };
 
   auto count_paths_to_top = [&](this auto self, auto from) {
-    if (is_peak(from)) return 1;
-    auto next = from.orthogonalNeighbors()  //
-                | std::views::filter(
-                      [&](auto to) { return (grid[to] - grid[from]) == 1; })  //
-                | std::views::transform(self);
-    return std::ranges::fold_left(next, 0, std::plus{});
+    if (is_peak(from)) return 1U;
+    return Utils::sum(from.orthogonalNeighbors()  //
+                      | std::views::filter([&](auto to) {
+                          return (grid[to] - grid[from]) == 1;
+                        })  //
+                      | std::views::transform(self));
   };
 
-  auto paths_from_heads = grid.coordinates()             //
-                          | std::views::filter(is_head)  //
-                          | std::views::transform(count_paths_to_top);
-  return std::ranges::fold_left(paths_from_heads, 0U, std::plus{});
+  return Utils::sum(grid.coordinates()             //
+                    | std::views::filter(is_head)  //
+                    | std::views::transform(count_paths_to_top));
 }
 
 }  // namespace Day10

@@ -13,6 +13,7 @@
 #include "utils/nm_view.hh"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
+#include "utils/sum.hh"
 
 namespace Day5 {
 
@@ -63,10 +64,9 @@ using Manuals = std::vector<Pages>;
     return isValid(rules, pages);
   };
 
-  auto midpoints = manuals                         //
-                   | std::views::filter(is_valid)  //
-                   | std::views::transform(midpoint);
-  return std::ranges::fold_left(midpoints, 0, std::plus{});
+  return Utils::sum(manuals                         //
+                    | std::views::filter(is_valid)  //
+                    | std::views::transform(midpoint));
 }
 
 [[nodiscard]] auto reorderInvalidPages(const RuleMap& rules,
@@ -83,11 +83,10 @@ using Manuals = std::vector<Pages>;
     return pages;
   };
 
-  auto reordered = manuals                           //
-                   | std::views::filter(is_invalid)  //
-                   | std::views::transform(reorder)  //
-                   | std::views::transform(midpoint);
-  return std::ranges::fold_left(reordered, 0, std::plus{});
+  return Utils::sum(manuals                           //
+                    | std::views::filter(is_invalid)  //
+                    | std::views::transform(reorder)  //
+                    | std::views::transform(midpoint));
 }
 
 }  // namespace Day5
