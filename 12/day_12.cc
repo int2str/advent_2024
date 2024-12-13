@@ -61,8 +61,8 @@ void expandPatch(const GardenGrid& grid, Utils::Coordinate from,
       std::ranges::distance(std::begin(others), std::end(others)));
 }
 
-[[nodiscard]] auto sidesFor(const GardenGrid& grid,
-                            Utils::Coordinate from) -> size_t {
+[[nodiscard]] auto sides(const GardenGrid& grid,
+                         Utils::Coordinate from) -> size_t {
   auto sides         = size_t{};
   const auto same_as = [&](auto other) {
     return grid[from + other] == grid[from];
@@ -78,11 +78,9 @@ void expandPatch(const GardenGrid& grid, Utils::Coordinate from,
   return sides;
 }
 
-[[nodiscard]] auto priceOf(const GardenGrid& grid,
-                           auto&& multiplier) -> size_t {
+[[nodiscard]] auto priceOf(const GardenGrid& grid, auto&& units) -> size_t {
   const auto patch_cost = [&](const auto& patch) {
-    return patch.count() *
-           Utils::sum(patch | std::views::transform(multiplier));
+    return patch.count() * Utils::sum(patch | std::views::transform(units));
   };
   return Utils::sum(patches(grid) | std::views::transform(patch_cost));
 }
@@ -92,7 +90,7 @@ void expandPatch(const GardenGrid& grid, Utils::Coordinate from,
 }
 
 [[nodiscard]] auto discountedPrice(const GardenGrid& grid) -> size_t {
-  return priceOf(grid, [&](auto tile) { return sidesFor(grid, tile); });
+  return priceOf(grid, [&](auto tile) { return sides(grid, tile); });
 }
 
 }  // namespace Day12
