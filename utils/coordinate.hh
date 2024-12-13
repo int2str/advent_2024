@@ -28,9 +28,11 @@ struct Coordinate {
 
   // Transform
 
-  void rotateClockwise() { *this = Coordinate{-y, x}; }
+  constexpr void rotateClockwise() { *this = Coordinate{-y, x}; }
 
-  void flip() { *this = Coordinate{-x, -y}; }
+  constexpr void rotateCounterClockwise() { *this = Coordinate{y, -x}; }
+
+  constexpr void flip() { *this = Coordinate{-x, -y}; }
 
   // Info
 
@@ -58,6 +60,23 @@ struct Coordinate {
             {x - 1, y + 1}};
   }
 };
+
+[[nodiscard]] constexpr auto rotatedClockwise(Coordinate coordinate)
+    -> Coordinate {
+  coordinate.rotateClockwise();
+  return coordinate;
+}
+
+[[nodiscard]] constexpr auto rotatedCounterClockwise(Coordinate coordinate)
+    -> Coordinate {
+  coordinate.rotateCounterClockwise();
+  return coordinate;
+}
+
+[[nodiscard]] constexpr auto flipped(Coordinate coordinate) -> Coordinate {
+  coordinate.flip();
+  return coordinate;
+}
 
 }  // namespace Utils
 
