@@ -42,8 +42,9 @@ auto split(std::string_view line, std::string_view delimiter) -> Coordinate {
   auto lines           = Utils::readLines(path) | std::views::filter(not_empty);
   auto machines        = Machines{};
   for (auto line = lines.begin(); line != lines.end();) {
-    machines.emplace_back(split(*line++, "+"), split(*line++, "+"),
-                          split(*line++, "="));
+    machines.emplace_back(split(*line++, "+"),   // Button A
+                          split(*line++, "+"),   // Button B
+                          split(*line++, "="));  // Prize
   }
   return machines;
 }
