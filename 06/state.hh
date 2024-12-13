@@ -24,9 +24,10 @@ struct State {
 
   Utils::Coordinate candidate_at{};
 
-  size_t candidates_attempted{};
+  size_t candidates_attempted{1};
   size_t obstruction_positions{};
   size_t travelled{};
+  size_t max_travel{};
 
   void resetGuard() {
     guard_at        = map.guard;
@@ -36,13 +37,12 @@ struct State {
   }
 
   void switchToProbing() {
+    max_travel = visited.count();
     candidates = visited;
     candidates.erase(map.guard);
     next_candidate = candidates.begin();
 
     mode                  = Mode::Probing;
-    candidates_attempted  = 1;
-    obstruction_positions = {};
     candidate_at          = *next_candidate;
     map.blocked.insert(candidate_at);
     resetGuard();

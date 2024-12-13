@@ -27,12 +27,8 @@ void moveGuard(State& state) {
 }
 
 [[nodiscard]] auto hasLooped(State& state) -> bool {
-  if (!state.visited.contains(state.guard_at)) {
-    state.travelled = 0;
-  } else {
-    ++state.travelled;
-  }
-  return (state.travelled == state.visited.size());
+  if (!state.visited.contains(state.guard_at)) state.travelled = 0;
+  return ++state.travelled == state.max_travel;
 }
 
 void spyOnTheGuard(State& state) {
