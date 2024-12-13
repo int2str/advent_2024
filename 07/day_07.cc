@@ -12,6 +12,7 @@
 #include "testrunner/testrunner.h"
 #include "utils/read_file.hh"
 #include "utils/split.hh"
+#include "utils/sum.hh"
 
 namespace Day7 {
 
@@ -74,8 +75,7 @@ template <typename... Ts>
 
 [[nodiscard]] auto calibrate(const Equations& problems,
                              const auto& fn) -> uint64_t {
-  return std::ranges::fold_left(  //
-      problems | std::views::transform(fn), uint64_t{}, std::plus{});
+  return Utils::sum(problems | std::views::transform(fn));
 }
 
 }  // namespace Day7
@@ -89,7 +89,7 @@ TEST(Day_07_Bridge_Repair_SAMPLE) {
 TEST(Day_07_Bridge_Repair_FINAL) {
   const auto equations = Day7::calibrationEquations("07/input.txt");
   EXPECT_EQ(Day7::calibrate(equations, Day7::fixPlusOrMultiplies),
-            303876485655ULL);
+            303'876'485'655ULL);
   EXPECT_EQ(Day7::calibrate(equations, Day7::alsoFixConcatenate),
-            146111650210682ULL);
+            146'111'650'210'682ULL);
 }
