@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 
 #include <algorithm>  // IWYU pragma: keep
+#include <array>
 #include <ranges>
 #include <vector>
 
@@ -28,19 +29,23 @@ using Equations = std::vector<Equation>;
          | std::ranges::to<std::vector>();
 }
 
-template <typename T>
-struct Concat {
-  [[nodiscard]] constexpr auto operator()(T a, T b) const -> T {
-    auto result     = T{};
-    const auto both = fmt::format("{}{}", a, b);
-    std::from_chars(both.data(), both.data() + both.size(), result);
-    return result;
+// NOLINTNEXTLINE
+[[nodiscard]] constexpr auto Confabulate(uint64_t a, uint64_t b) -> uint64_t {
+  if (b == 0) return a * 10ULL;
+  auto digits = std::array<uint8_t, 20>{};  // Max digits in U64
+  auto digit  = size_t{};
+  while (b != 0) {
+    digits[digit++] = static_cast<uint8_t>(b % 10);
+    b /= 10ULL;
   }
-};
+  while (digit != 0) a = a * 10ULL + digits[--digit];
+  return a;
+}
 
 template <typename... Ts>
-auto tryOp(uint64_t solution, uint64_t accumulated, auto operands,
-           const auto& op, const std::tuple<Ts...>& ops) -> bool {
+[[nodiscard]] constexpr auto tryOp(uint64_t solution, uint64_t accumulated,
+                                   auto operands, const auto& op,
+                                   const std::tuple<Ts...>& ops) -> bool {
   accumulated = op(accumulated, operands.front());
   if (operands.size() == 1) return accumulated == solution;
   return (
@@ -49,8 +54,8 @@ auto tryOp(uint64_t solution, uint64_t accumulated, auto operands,
 }
 
 template <typename... Ts>
-[[nodiscard]] auto tryOps(const Equation& problem,
-                          const std::tuple<Ts...>& ops) -> bool {
+[[nodiscard]] constexpr auto tryOps(const Equation& problem,
+                                    const std::tuple<Ts...>& ops) -> bool {
   if (problem.size() < 3) return false;
 
   const auto solution    = problem.front();
@@ -68,8 +73,7 @@ template <typename... Ts>
 }
 
 [[nodiscard]] auto alsoFixConcatenate(const Equation& problem) -> uint64_t {
-  const auto ops =
-      std::tuple(std::plus{}, std::multiplies{}, Concat<uint64_t>{});
+  const auto ops = std::tuple(std::plus{}, std::multiplies{}, &Confabulate);
   return tryOps(problem, ops) ? problem.front() : 0U;
 }
 
