@@ -2,6 +2,7 @@
 #define COORDINATE_HH
 
 #include <array>
+#include <cmath>
 #include <compare>  // IWYU pragma: keep
 #include <type_traits>
 
@@ -63,6 +64,11 @@ struct CoordinateBase {
             {x + 1, y + 1},
             {x + 1, y - 1},
             {x - 1, y + 1}};
+  }
+
+  constexpr auto distanceFrom(const CoordinateBase& other) const -> double {
+    return std::sqrt((x - other.x) * (x - other.x) +
+                     (y - other.y) * (y - other.y));
   }
 };
 
