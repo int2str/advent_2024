@@ -56,7 +56,7 @@ Window::Window(const State* state)
   block_.setFillColor(COLOR_BLOCK);
   visited_.setFillColor(COLOR_VISITED);
 
-  font_.loadFromFile("06/LiberationSans-Regular.ttf");
+  font_.loadFromFile("assets/LiberationSans-Regular.ttf");
 
   text_.setFont(font_);
   text_.setFillColor(COLOR_FONT);
