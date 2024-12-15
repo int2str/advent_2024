@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <istream>
+#include <optional>
 #include <ranges>
 #include <stdexcept>
 #include <vector>
@@ -140,10 +141,19 @@ class Grid {
   [[nodiscard]] auto coordinates() const {
     return std::views::cartesian_product(std::views::iota(0U, height_),
                                          std::views::iota(0U, width_))  //
-           | std::views::transform([](auto&& product) {
-               return Coordinate{static_cast<int>(std::get<1>(product)),
-                                 static_cast<int>(std::get<0>(product))};
+           | std::views::transform([](auto&& xy_tuple) {
+               return Coordinate{static_cast<int>(std::get<1>(xy_tuple)),
+                                 static_cast<int>(std::get<0>(xy_tuple))};
              });
+  }
+
+  // Algorithms
+
+  [[nodiscard]] auto find(const STORE_AS& what) const
+      -> std::optional<Coordinate> {
+    for (const auto search : coordinates())
+      if ((*this)[search] == what) return search;
+    return std::nullopt;
   }
 };
 
