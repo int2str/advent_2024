@@ -33,13 +33,15 @@ using Equations = std::vector<Equation>;
 [[nodiscard]] constexpr auto Confabulate(uint64_t a, uint64_t b) -> uint64_t {
   if (b == 0) return a * 10ULL;
   auto digits = std::array<uint8_t, 20>{};  // Max digits in U64
-  auto digit  = size_t{};
+  auto* digit = digits.begin();
   while (b != 0) {
-    digits[digit++] = static_cast<uint8_t>(b % 10);
+    *digit++ = static_cast<uint8_t>(b % 10);
     b /= 10ULL;
   }
-  while (digit != 0) a = a * 10ULL + digits[--digit];
-  return a;
+
+  return std::ranges::fold_left(
+      std::ranges::subrange(digits.begin(), digit) | std::views::reverse, a,
+      [](auto acc, auto dig) { return acc * 10ULL + dig; });
 }
 
 template <typename... Ts>
