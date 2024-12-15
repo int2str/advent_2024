@@ -12,12 +12,22 @@ struct Robot {
   Utils::Coordinate position{};
   Utils::Coordinate velocity{};
 
-  void move(Utils::Coordinate max) {
+  constexpr auto step() -> Robot& {
     position += velocity;
-    if (position.y < 0) position.y = max.y + position.y;
-    if (position.y >= max.y) position.y = position.y - max.y;
-    if (position.x < 0) position.x = max.x + position.x;
-    if (position.x >= max.x) position.x = position.x - max.x;
+    return *this;
+  }
+
+  constexpr auto steps(int steps) -> Robot& {
+    position += velocity * steps;
+    return *this;
+  }
+
+  constexpr auto clipTo(Utils::Coordinate max) -> Robot& {
+    if (position.y < 0) position.y = max.y + (position.y % max.y);
+    if (position.y >= max.y) position.y = position.y % max.y;
+    if (position.x < 0) position.x = max.x + (position.x % max.x);
+    if (position.x >= max.x) position.x = position.x % max.x;
+    return *this;
   }
 };
 
