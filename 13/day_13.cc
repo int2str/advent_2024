@@ -4,13 +4,12 @@
 //
 
 #include <ranges>
-#include <string_view>
 #include <vector>
 
+#include "external/ctre.hpp"
 #include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/read_file.hh"
-#include "utils/split.hh"
 #include "utils/sum.hh"
 
 namespace Day13 {
@@ -30,21 +29,20 @@ struct Machine {
 
 using Machines = std::vector<Machine>;
 
-auto split(std::string_view line, std::string_view delimiter) -> Coordinate {
-  return *std::begin(Utils::split<int, 3>(line, delimiter)  //
-                     | std::views::drop(1)                  //
-                     | std::views::pairwise_transform(
-                           [&](auto x, auto y) { return Coordinate{x, y}; }));
-}
-
 [[nodiscard]] auto loadConfig(const std::filesystem::path& path) -> Machines {
-  const auto not_empty = [](const auto& line) { return !line.empty(); };
-  auto lines           = Utils::readLines(path) | std::views::filter(not_empty);
-  auto machines        = Machines{};
-  for (auto line = lines.begin(); line != lines.end();) {
-    machines.emplace_back(split(*line++, "+"),   // Button A
-                          split(*line++, "+"),   // Button B
-                          split(*line++, "="));  // Prize
+  using namespace ctre::literals;  // NOLINT
+  auto machines   = Machines{};
+  const auto file = Utils::readFile(path);
+  for (auto [matched, ax, ay, bx, by, px, py] :
+       ctre::search_all<R"(Button A: X\+(\d+), Y\+(\d+)\s?)"
+                        R"(Button B: X\+(\d+), Y\+(\d+)\s?)"
+                        R"(Prize: X=(\d+), Y=(\d+))">(file)) {
+    if (matched) {
+      machines.push_back(
+          Machine{.button_a = Coordinate{ax.to_number(), ay.to_number()},
+                  .button_b = Coordinate{bx.to_number(), by.to_number()},
+                  .prize    = Coordinate{px.to_number(), py.to_number()}});
+    }
   }
   return machines;
 }
