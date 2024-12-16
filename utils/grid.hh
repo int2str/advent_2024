@@ -71,7 +71,7 @@ class Grid {
   // Constructors
 
   Grid(size_t width, size_t height)
-      : width_{width}, height_{height}, data_{width * height} {}
+      : width_{width}, height_{height}, data_(width * height) {}
 
   template <typename CHARACTER_RANGE>
     requires std::is_same_v<STORE_AS, char>
