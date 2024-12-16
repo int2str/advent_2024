@@ -5,7 +5,7 @@
 
 namespace Utils {
 
-struct Directions {
+struct Direction {
   [[nodiscard]] static constexpr auto left() -> Coordinate {
     return {.x = -1, .y = 0};
   }
@@ -37,10 +37,13 @@ struct Directions {
   [[nodiscard]] static constexpr auto downRight() -> Coordinate {
     return down() + right();
   }
+};
 
+struct Directions {
   [[nodiscard]] static constexpr auto clockwise() -> std::array<Coordinate, 8> {
-    return {up(),   upRight(),  right(), downRight(),
-            down(), downLeft(), left(),  upLeft()};
+    return {Direction::up(),        Direction::upRight(), Direction::right(),
+            Direction::downRight(), Direction::down(),    Direction::downLeft(),
+            Direction::left(),      Direction::upLeft()};
   }
 };
 

@@ -54,8 +54,8 @@ using XmasGrid = Utils::Grid<char, Utils::OutOfBoundsPolicy::Default<char{}>>;
   };
 
   const auto is_MAS = [&](auto from) {
-    return is_MS(from, Utils::Directions::upLeft()) and
-           is_MS(from, Utils::Directions::upRight());
+    return is_MS(from, Utils::Direction::upLeft()) and
+           is_MS(from, Utils::Direction::upRight());
   };
 
   auto found = grid.coordinates()          //

@@ -71,10 +71,10 @@ void expandPatch(const GardenGrid& grid, Utils::Coordinate from,
     return !same_as(directions1) and
            (!same_as(direction2) or same_as(directions1 + direction2));
   };
-  if (new_side(Utils::Directions::up(), Utils::Directions::left())) ++sides;
-  if (new_side(Utils::Directions::down(), Utils::Directions::left())) ++sides;
-  if (new_side(Utils::Directions::left(), Utils::Directions::up())) ++sides;
-  if (new_side(Utils::Directions::right(), Utils::Directions::up())) ++sides;
+  if (new_side(Utils::Direction::up(), Utils::Direction::left())) ++sides;
+  if (new_side(Utils::Direction::down(), Utils::Direction::left())) ++sides;
+  if (new_side(Utils::Direction::left(), Utils::Direction::up())) ++sides;
+  if (new_side(Utils::Direction::right(), Utils::Direction::up())) ++sides;
   return sides;
 }
 

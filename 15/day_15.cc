@@ -16,7 +16,7 @@
 namespace Day15 {
 
 using Utils::Coordinate;
-using Utils::Directions;
+using Utils::Direction;
 
 using Map   = Utils::Grid<char>;
 using Moves = std::vector<char>;
@@ -35,10 +35,10 @@ struct Instructions {
 [[nodiscard]] constexpr auto directionFrom(char chr) -> Utils::Coordinate {
   // clang-format off
   switch (chr) {
-    case '<': return Directions::left();
-    case '>': return Directions::right();
-    case '^': return Directions::up();
-    case 'v': return Directions::down();
+    case '<': return Direction::left();
+    case '>': return Direction::right();
+    case '^': return Direction::up();
+    case 'v': return Direction::down();
     default: return Coordinate{}; }
   // clang-format on
 }
@@ -47,7 +47,7 @@ struct Instructions {
   auto out = Map{in.width() * 2, in.height()};
   for (const auto at : in.coordinates()) {
     const auto out_at   = Coordinate{at.x * 2, at.y};
-    const auto right_of = out_at + Directions::right();
+    const auto right_of = out_at + Direction::right();
     switch (in[at]) {
       case '#':
       case '.':
@@ -76,7 +76,7 @@ struct Instructions {
                               Coordinate direction) -> bool {
   const auto to1 = from + direction;
   const auto to2 =
-      to1 + (map[from] == ']' ? Directions::left() : Directions::right());
+      to1 + (map[from] == ']' ? Direction::left() : Direction::right());
   if (map[to1] == '#' or map[to2] == '#') return false;
   return (map[to1] == '.' or canMove(map, to1, direction)) and
          (map[to2] == '.' or canMove(map, to2, direction));
@@ -86,7 +86,7 @@ struct Instructions {
                            Coordinate direction) -> bool {
   const auto to = from + direction;
   if (map[from] == one_of('[', ']') and
-      direction == one_of(Directions::up(), Directions::down()))
+      direction == one_of(Direction::up(), Direction::down()))
     return canMoveBox(map, from, direction);
   if (map[to] == '#') return false;
   if (map[to] == '.') return true;
@@ -94,11 +94,11 @@ struct Instructions {
 }
 
 void moveLargeBox(Map& map, Coordinate from, const Coordinate direction) {
-  if (map[from] == ']') from += Directions::left();
+  if (map[from] == ']') from += Direction::left();
   if (map[from + direction] == one_of('[', ']'))
     moveLargeBox(map, from + direction, direction);
 
-  const auto other = from + Directions::right();
+  const auto other = from + Direction::right();
   if (map[other + direction] == one_of('[', ']'))
     moveLargeBox(map, other + direction, direction);
 
@@ -112,7 +112,7 @@ constexpr auto move(Map& map, Coordinate from,
   if (map[to] == '#') return from;
 
   if ((map[from] == one_of('[', ']')) and
-      (direction == Directions::up() or direction == Directions::down())) {
+      (direction == Direction::up() or direction == Direction::down())) {
     if (!canMove(map, from, direction)) return from;
     moveLargeBox(map, from, direction);
 
