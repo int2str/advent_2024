@@ -1,23 +1,19 @@
 //
 // int2str's Advent of Code 2024
-// https://adventofcode.com/2024/day/??
+// https://adventofcode.com/2024/day/15
 //
-
-#include <fmt/core.h>
-#include <fmt/ranges.h>
 
 #include <fstream>
 
+#include "testrunner/testrunner.h"
 #include "utils/coordinate.hh"
 #include "utils/coordinate_directions.hh"
-#include "utils/coordinate_formatter.hh"
 #include "utils/grid.hh"
-#include "utils/grid_formatter.hh"
 #include "utils/one_of.hh"
 #include "utils/read_file.hh"
 #include "utils/sum.hh"
 
-namespace DayWIP {
+namespace Day15 {
 
 using Utils::Coordinate;
 using Utils::Directions;
@@ -160,10 +156,16 @@ constexpr auto move(Map& map, Coordinate from,
   return gpsScore(instructions.map);
 }
 
-}  // namespace DayWIP
+}  // namespace Day15
 
-auto main() -> int {
-  const auto instructions = DayWIP::readInstructions("wip/input");
-  fmt::print("Warehouse 1: {}\n", DayWIP::warehouseOneScore(instructions));
-  fmt::print("Warehouse 2: {}\n", DayWIP::warehouseTwoScore(instructions));
+TEST(Day_15_Warehouse_Woes_SAMPLE) {
+  const auto instructions = Day15::readInstructions("15/sample");
+  EXPECT_EQ(Day15::warehouseOneScore(instructions), 10092);
+  EXPECT_EQ(Day15::warehouseTwoScore(instructions), 9021);
+}
+
+TEST(Day_15_Warehouse_Woes_FINAL) {
+  const auto instructions = Day15::readInstructions("15/input");
+  EXPECT_EQ(Day15::warehouseOneScore(instructions), 1509074);
+  EXPECT_EQ(Day15::warehouseTwoScore(instructions), 1521453);
 }

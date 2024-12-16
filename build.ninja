@@ -51,6 +51,7 @@ build $b/advent2024: link $b/testrunner_main.o $
   $b/day_13.o $
   $b/day_14.o $
   $b/day_14_robots.o $
+  $b/day_15.o $
   $b/utils.a
 
 build $b/day_01.o: cxx 01/day_01.cc
@@ -67,6 +68,7 @@ build $b/day_11.o: cxx 11/day_11.cc
 build $b/day_12.o: cxx 12/day_12.cc
 build $b/day_13.o: cxx 13/day_13.cc
 build $b/day_14.o: cxx 14/day_14.cc
+build $b/day_15.o: cxx 15/day_15.cc
 
 build $b/day_14_robots.o: cxx 14/robots.cc
 
@@ -86,7 +88,6 @@ build $b/day_14_animated: link $b/day_14_animated.o $
   libs = -lsfml-graphics -lsfml-window -lsfml-system
 build $b/day_14_animated.o: cxx 14/day_14_animated.cc
 build $b/day_14_window.o: cxx 14/window.cc
-
 
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
