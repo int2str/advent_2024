@@ -56,8 +56,6 @@ Window::Window(Utils::Coordinate max)
   lines_.append({sf::Vector2f{width / 2 - tile_.x / 2, height}, COLOR_GRID});
   lines_.append({sf::Vector2f{width / 2 + tile_.x / 2, 0.0F}, COLOR_GRID});
   lines_.append({sf::Vector2f{width / 2 + tile_.x / 2, height}, COLOR_GRID});
-
-  std::srand(static_cast<unsigned>(std::time(nullptr)));
 }
 
 auto Window::isOpen() const -> bool { return window_.isOpen(); }
