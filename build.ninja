@@ -89,6 +89,13 @@ build $b/day_14_animated: link $b/day_14_animated.o $
 build $b/day_14_animated.o: cxx 14/day_14_animated.cc
 build $b/day_14_window.o: cxx 14/window.cc
 
+build $b/day_15_animated: link $b/day_15_animated.o $
+    $b/day_15_window.o $
+    $b/utils.a
+  libs = -lsfml-graphics -lsfml-window -lsfml-system
+build $b/day_15_animated.o: cxx 15/day_15_animated.cc
+build $b/day_15_window.o: cxx 15/window.cc
+
 build $b/utils.a: ar $b/read_file.o
 build $b/read_file.o: cxx utils/read_file.cc
 
