@@ -20,6 +20,12 @@ class Window {
   sf::Texture texture_robot_{};
   sf::Sprite robot_{};
 
+  sf::Clock clock_{};
+
+  Utils::Coordinate robot_at_{};
+
+  [[nodiscard]] auto tileAt(Utils::Coordinate coordinate) const -> sf::Vector2f;
+
  public:
   explicit Window(Utils::Coordinate max);
 
@@ -28,7 +34,8 @@ class Window {
   auto isOpen() const -> bool;
 
   void handleEvents();
-  void draw(const Utils::Grid<char>& map, Utils::Coordinate robot_direction);
+  auto draw(const Utils::Grid<char>& map, Utils::Coordinate robot_position,
+            Utils::Coordinate robot_direction) -> bool;
 };
 
 }  // namespace Day15

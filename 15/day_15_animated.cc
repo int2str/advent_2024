@@ -58,7 +58,7 @@ constexpr auto move(Map& map, Coordinate from,
 void animate(Instructions instructions) {
   auto window = Window(Coordinate{static_cast<int>(instructions.map.width()),
                                   static_cast<int>(instructions.map.height())});
-  window.fps(144);
+  window.fps(60);
 
   auto robot     = instructions.map.find('@').value_or(Utils::Coordinate{});
   auto direction = Direction::up();
@@ -66,9 +66,9 @@ void animate(Instructions instructions) {
 
   while (window.isOpen()) {
     window.handleEvents();
-    window.draw(instructions.map, direction);
+    const auto move_completed = window.draw(instructions.map, robot, direction);
 
-    if (move_it != instructions.moves.end()) {
+    if (move_completed and move_it != instructions.moves.end()) {
       fmt::print("{}\n", *move_it);
       direction = directionFrom(*move_it++);
       robot     = move(instructions.map, robot, direction);
@@ -78,7 +78,8 @@ void animate(Instructions instructions) {
 
 }  // namespace Day15
 
-auto main() -> int {
-  const auto instructions = Day15::readInstructions("15/input");
+auto main(int argc, char** argv) -> int {
+  const auto instructions =
+      Day15::readInstructions(argc < 2 ? "15/input" : argv[1]);
   Day15::animate(instructions);
 }
