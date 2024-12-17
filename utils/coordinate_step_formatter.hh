@@ -7,15 +7,11 @@
 #include "coordinate_step.hh"
 
 template <>
-struct fmt::formatter<Utils::Step> {
-  template <typename ParseContext>
-  constexpr auto parse(ParseContext& ctx) {
-    return ctx.begin();
-  }
-
+struct fmt::formatter<Utils::Step> : fmt::formatter<Utils::Coordinate> {
   template <typename FormatContext>
   auto format(const Utils::Step& step, FormatContext& ctx) const {
-    return fmt::format_to(ctx.out(), "{}->{}", step.position, step.direction);
+    fmt::formatter<Utils::Coordinate>::format(step.position, ctx);
+    return fmt::format_to(ctx.out(), "->{}", step.direction);
   }
 };
 
