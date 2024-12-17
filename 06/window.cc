@@ -105,7 +105,7 @@ void Window::draw() {
   for (const auto& pos : state_->visited) drawBlock(window_, visited_, pos);
 
   if (state_->mode == Mode::Tracing) {
-    drawBlock(window_, guard_, state_->guard_at);
+    drawBlock(window_, guard_, state_->guard.position);
 
     text_.setString(std::format("Steps: {}", state_->visited.count()));
   }

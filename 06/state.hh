@@ -6,6 +6,7 @@
 #include "map.hh"
 #include "utils/coordinate.hh"
 #include "utils/coordinate_set.hh"
+#include "utils/coordinate_step.hh"
 
 namespace Day6 {
 
@@ -15,8 +16,7 @@ struct State {
   Map map;
   Mode mode = Mode::Tracing;
 
-  Utils::Coordinate guard_at{};
-  Utils::Coordinate guard_direction{};
+  Utils::Step guard{};
 
   Utils::CoordinateSet visited{};
   Utils::CoordinateSet candidates{};
@@ -30,8 +30,8 @@ struct State {
   size_t max_travel{};
 
   void resetGuard() {
-    guard_at        = map.guard;
-    guard_direction = Map::start_direction;
+    guard.position  = map.guard;
+    guard.direction = Map::start_direction;
     visited         = {};
     travelled       = {};
   }
@@ -42,8 +42,8 @@ struct State {
     candidates.erase(map.guard);
     next_candidate = candidates.begin();
 
-    mode                  = Mode::Probing;
-    candidate_at          = *next_candidate;
+    mode         = Mode::Probing;
+    candidate_at = *next_candidate;
     map.blocked.insert(candidate_at);
     resetGuard();
   }

@@ -12,22 +12,24 @@
 namespace Day6 {
 
 [[nodiscard]] constexpr auto guardInBounds(const State& state) -> bool {
-  return state.guard_at.x >= 0 and state.guard_at.x < state.map.size.x and  //
-         state.guard_at.y >= 0 and state.guard_at.y < state.map.size.y;
+  return state.guard.position.x >= 0 and
+         state.guard.position.x < state.map.size.x and  //
+         state.guard.position.y >= 0 and
+         state.guard.position.y < state.map.size.y;
 }
 
 void moveGuard(State& state) {
-  state.visited.insert(state.guard_at);
-  auto new_position = state.guard_at + state.guard_direction;
+  state.visited.insert(state.guard.position);
+  auto new_position = state.guard.position + state.guard.direction;
   while (state.map.blocked.contains(new_position)) {
-    state.guard_direction.rotateClockwise();
-    new_position = state.guard_at + state.guard_direction;
+    state.guard.direction.rotateClockwise();
+    new_position = state.guard.position + state.guard.direction;
   }
-  state.guard_at = new_position;
+  state.guard.position = new_position;
 }
 
 [[nodiscard]] auto hasLooped(State& state) -> bool {
-  if (!state.visited.contains(state.guard_at)) state.travelled = 0;
+  if (!state.visited.contains(state.guard.position)) state.travelled = 0;
   return ++state.travelled == state.max_travel;
 }
 
