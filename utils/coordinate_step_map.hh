@@ -9,9 +9,9 @@
 namespace Utils {
 
 struct StepHash {
-  [[nodiscard]] constexpr auto operator()(const Step& step) const -> int {
-    return static_cast<int>(Utils::CoordinateHash()(step.position) ^
-                            Utils::CoordinateHash()(step.direction));
+  [[nodiscard]] constexpr auto operator()(const Step& step) const -> size_t {
+    return static_cast<size_t>(Utils::CoordinateHash()(step.position) ^
+                               Utils::CoordinateHash()(step.direction));
   }
 };
 
@@ -19,5 +19,17 @@ template <typename T>
 using StepMap = std::unordered_map<Step, T, StepHash>;
 
 }  // namespace Utils
+
+namespace std {
+
+template <>
+struct hash<Utils::Step> {
+  [[nodiscard]] auto operator()(const Utils::Step& step) const noexcept
+      -> size_t {
+    return Utils::StepHash()(step);
+  }
+};
+
+}  // namespace std
 
 #endif  // COORDINATE_STEP_MAP_HH

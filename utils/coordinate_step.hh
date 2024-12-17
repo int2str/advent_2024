@@ -10,6 +10,10 @@ struct Step {
   Coordinate direction;
 
   [[nodiscard]] constexpr auto operator<=>(const Step&) const = default;
+
+  [[nodiscard]] constexpr auto next() const -> Coordinate {
+    return position + direction;
+  }
 };
 
 }  // namespace Utils
