@@ -45,6 +45,17 @@ struct Directions {
             Direction::downRight(), Direction::down(),    Direction::downLeft(),
             Direction::left(),      Direction::upLeft()};
   }
+
+  [[nodiscard]] static constexpr auto orthagonal()
+      -> std::array<Coordinate, 4> {
+    return {Direction::up(), Direction::right(), Direction::down(),
+            Direction::left()};
+  }
+
+  [[nodiscard]] static constexpr auto diagonal() -> std::array<Coordinate, 4> {
+    return {Direction::upRight(), Direction::downRight(), Direction::downLeft(),
+            Direction::upLeft()};
+  }
 };
 
 }  // namespace Utils
