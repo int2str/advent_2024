@@ -1,6 +1,6 @@
 //
 // int2str's Advent of Code 2024
-// https://adventofcode.com/2024/day/??
+// https://adventofcode.com/2024/day/16
 //
 
 #include <algorithm>  // IWYU pragma: keep
