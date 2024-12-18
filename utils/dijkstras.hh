@@ -59,6 +59,31 @@ template <typename DISTANCE, typename EDGE>
   return std::make_pair(distances, previous);
 }
 
+template <typename DISTANCE, typename EDGE>
+[[nodiscard]] auto dijkstra(WeightedEdge<DISTANCE, EDGE> start, EDGE finish,
+                            auto&& adjacent) {
+  auto distances = Detail::default_map<EDGE, DISTANCE>{};
+
+  auto queue = std::priority_queue<WeightedEdge<DISTANCE, EDGE>>{};
+  queue.push(start);
+
+  while (!queue.empty()) {
+    const auto [distance, current] = queue.top();
+    queue.pop();
+
+    if (current == finish) return distance;
+
+    for (const auto [distance_to, other] : adjacent(current)) {
+      if (distance + distance_to < distances.at_or_max(other)) {
+        distances[other] = distance + distance_to;
+        queue.push({distances[other], other});
+      }
+    }
+  }
+
+  return DISTANCE{};
+}
+
 }  // namespace Utils
 
 #endif  // UTILS_DIJKSTRAS_HH
