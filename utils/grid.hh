@@ -136,6 +136,8 @@ class Grid {
            coordinate.y >= 0 and static_cast<size_t>(coordinate.y) < height_;
   }
 
+  void clear() { std::fill(data_.begin(), data_.end(), STORE_AS{}); }
+
   // Coordinate Generators
 
   [[nodiscard]] auto coordinates() const {
